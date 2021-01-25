@@ -1,5 +1,9 @@
 <template>
-    <div>Hello World</div>
+    <MainLayout>
+        <Header />
+        <MainContent />
+        <MainMenu />
+    </MainLayout>
 </template>
 
 <script lang="ts">
