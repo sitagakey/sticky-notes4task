@@ -1,15 +1,22 @@
 <template>
     <div class="filter-box">
-        <p class="filter-box__label">{{ label }}</p>
-        <ul class="filter-box__list"></ul>
+        <div class="filter-box__head">
+            <p class="filter-box__label">{{ label }}</p>
+            <AdditionalBtn v-if="additionalBtn" :alt="additionalBtnAlt" />
+        </div>
+        <div class="filter-box__body">
+            <CheckboxList :checkbox-data-arr="filterItemData" />
+        </div>
     </div>
 </template>
 
 <script lang="ts">
 import Vue, { PropOptions } from 'vue';
 
-interface FilterBtnData {
+interface FilterItemData {
+    id: number;
     label: string;
+    isChecked: boolean;
     onChange: () => void;
 }
 
@@ -19,18 +26,38 @@ export default Vue.extend({
             type: String,
             required: true,
         },
-        filterBtnData: {
+        filterItemData: {
             type: Array,
             required: true,
-        } as PropOptions<FilterBtnData[]>,
+        } as PropOptions<FilterItemData[]>,
+        additionalBtn: {
+            type: Boolean,
+            default: false,
+        },
+        additionalBtnAlt: {
+            type: String,
+            default: '追加',
+        },
     },
 });
 </script>
 
 <style lang="scss" scoped>
-.filter-btn {
-    border-radius: 5px;
-    background-color: $c-gray;
-    padding: $p-2xs;
+.filter-box {
+    & + & {
+        margin-top: $m-md;
+    }
+    &__head {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    &__label {
+        font-size: 1.6rem;
+        font-weight: bold;
+    }
+    &__body {
+        margin-top: $m-md;
+    }
 }
 </style>

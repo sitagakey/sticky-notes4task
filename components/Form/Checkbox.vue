@@ -23,9 +23,7 @@ export default Vue.extend({
     $icon-size: 20;
 
     display: block;
-    min-width: 80px;
-    padding: 0 0 0 calc(#{$icon-size}px + #{$p-sm});
-    border-radius: 5px;
+    padding: 0 0 0 calc(#{$icon-size}px + #{$p-xs});
     position: relative;
 
     &__input {

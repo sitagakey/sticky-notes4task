@@ -25,9 +25,9 @@
     background: $c-gray-light;
     @include media-min() {
         width: 300px;
-        height: 100vh;
+        min-height: 100vh;
         @supports (-webkit-touch-callout: none) {
-            height: -webkit-fill-available;
+            min-height: -webkit-fill-available;
         }
     }
 

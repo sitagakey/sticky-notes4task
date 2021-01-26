@@ -4,6 +4,7 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    word-break: break-all;
 
     &::before,
     &::after {
@@ -21,6 +22,7 @@ body {
 button {
     border: 0;
     background: transparent;
+    cursor: pointer;
 }
 ul {
     list-style: none;
