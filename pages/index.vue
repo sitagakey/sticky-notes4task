@@ -1,9 +1,10 @@
 <template>
-    <MainLayout>
+    <div>
         <Header />
         <MainContent />
-        <MainMenu />
-    </MainLayout>
+        <Footer />
+        <ConfigBox />
+    </div>
 </template>
 
 <script lang="ts">

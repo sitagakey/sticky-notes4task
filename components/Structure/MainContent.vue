@@ -5,7 +5,8 @@
                 :label="'状態'"
                 :filter-item-data="[
                     { id: 1, label: '未対応' },
-                    { id: 2, label: '進行中' },
+                    { id: 2, label: '対応中' },
+                    { id: 2, label: '着手中' },
                     { id: 3, label: '完了' },
                 ]"
             />
@@ -22,6 +23,9 @@
         </div>
         <div class="main-content__body">
             <StatePanel />
+            <StatePanel />
+            <StatePanel />
+            <StatePanel />
         </div>
     </div>
 </template>
@@ -33,17 +37,33 @@ export default Vue.extend({});
 
 <style lang="scss" scoped>
 .main-content {
-    min-height: 100vh;
-    @include media-min() {
-        min-height: auto;
-    }
+    display: grid;
+    grid-template-rows: auto 1fr;
+    grid-template-columns: 1fr;
 
     &__head {
         padding: $p-md;
     }
     &__body {
+        display: flex;
+        align-items: flex-start;
         overflow: auto;
-        padding: $p-md;
+        padding: $p-md 0 $p-md $p-md;
+
+        > * {
+            min-width: 300px;
+            width: 100%;
+        }
+        > *:not(:first-child) {
+            margin-left: $m-md;
+        }
+        // 右paddingが表示されないため擬似要素で代替
+        &:after {
+            content: '';
+            display: block;
+            min-width: $m-md;
+            height: 1px;
+        }
     }
 }
 </style>

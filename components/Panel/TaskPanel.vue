@@ -1,11 +1,14 @@
 <template>
     <div class="task-panel">
         <div class="task-panel__head">
-            <p class="task-panel__label">英語の教科書3ページ</p>
-            <p class="task-panel__desc">英語の教科書を毎日やる</p>
-            <!-- <ul class="task-panel__btn">
+            <div>
+                <p class="task-panel__label">英語の教科書3ページ</p>
+                <p class="task-panel__desc">英語の教科書を毎日やる</p>
+            </div>
+            <ul class="task-panel__btn">
+                <li><ArrowBtn /></li>
                 <li><MenuBtn /></li>
-            </ul> -->
+            </ul>
         </div>
         <div class="task-panel__body">
             <div class="task-panel__detail">
@@ -33,16 +36,16 @@
             <div class="task-panel__controller">
                 <ul class="task-panel__controller-inr">
                     <li class="task-panel__controller-item">
-                        <ArrowBtn />
+                        <ArrowBtn state="top" />
                     </li>
                     <li class="task-panel__controller-item">
-                        <ArrowBtn />
+                        <ArrowBtn state="bottom" />
                     </li>
                     <li class="task-panel__controller-item">
-                        <ArrowBtn />
+                        <ArrowBtn state="left" />
                     </li>
                     <li class="task-panel__controller-item">
-                        <ArrowBtn />
+                        <ArrowBtn state="right" />
                     </li>
                 </ul>
             </div>
@@ -61,9 +64,8 @@ export default Vue.extend({});
     border: 1px solid $c-gray;
 
     &__head {
-        // display: flex;
-        // justify-content: space-between;
-        // align-items: center;
+        display: flex;
+        justify-content: space-between;
         padding: $p-sm;
     }
     &__label {

@@ -2,7 +2,7 @@
     <div class="filter-box">
         <div class="filter-box__head">
             <p class="filter-box__label">{{ label }}</p>
-            <AdditionalBtn v-if="additionalBtn" :alt="additionalBtnAlt" />
+            <MenuBtn v-if="additionalBtn" :alt="additionalBtnAlt" />
         </div>
         <div class="filter-box__body">
             <CheckboxList :checkbox-data-arr="filterItemData" />
@@ -49,8 +49,12 @@ export default Vue.extend({
     }
     &__head {
         display: flex;
-        justify-content: space-between;
+        // justify-content: space-between;
         align-items: center;
+
+        > *:not(:first-child) {
+            margin-left: $m-sm;
+        }
     }
     &__label {
         font-size: 1.6rem;

@@ -14,8 +14,6 @@
         </div>
         <ul class="state-panel__body">
             <li><TaskPanel /></li>
-            <li><TaskPanel /></li>
-            <li><TaskPanel /></li>
         </ul>
     </div>
 </template>
