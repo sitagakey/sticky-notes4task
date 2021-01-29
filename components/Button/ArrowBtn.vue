@@ -40,6 +40,7 @@ export default Vue.extend({
     position: relative;
 
     &:focus {
+        outline: 0;
         border: 1px solid $c-secondary;
     }
     &::before {

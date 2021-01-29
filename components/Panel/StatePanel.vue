@@ -5,7 +5,6 @@
                 <p class="state-panel__label">未対応</p>
                 <ul class="state-panel__btn">
                     <li><AdditionalBtn /></li>
-                    <li><MenuBtn /></li>
                 </ul>
             </div>
             <div class="state-panel__order">
