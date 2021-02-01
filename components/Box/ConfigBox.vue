@@ -74,35 +74,9 @@
 </template>
 
 <script lang="ts">
-import Vue, { PropOptions } from 'vue';
+import Vue from 'vue';
 
-interface FilterItemData {
-    id: number;
-    label: string;
-    isChecked: boolean;
-    onChange: () => void;
-}
-
-export default Vue.extend({
-    props: {
-        label: {
-            type: String,
-            required: true,
-        },
-        filterItemData: {
-            type: Array,
-            required: true,
-        } as PropOptions<FilterItemData[]>,
-        additionalBtn: {
-            type: Boolean,
-            default: false,
-        },
-        additionalBtnAlt: {
-            type: String,
-            default: '追加',
-        },
-    },
-});
+export default Vue.extend({});
 </script>
 
 <style lang="scss" scoped>

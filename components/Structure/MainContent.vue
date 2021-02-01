@@ -3,36 +3,43 @@
         <div class="main-content__head">
             <FilterBox
                 :label="'状態'"
-                :filter-item-data="[
-                    { id: 1, label: '未対応' },
-                    { id: 2, label: '対応中' },
-                    { id: 2, label: '着手中' },
-                    { id: 3, label: '完了' },
-                ]"
+                :checkbox-data-arr="statePanelCheckBoxData"
             />
             <FilterBox
                 :label="'カテゴリ'"
-                :filter-item-data="[
-                    { id: 1, label: '英語' },
-                    { id: 2, label: '読書' },
-                    { id: 3, label: 'コーディング' },
-                ]"
-                :additional-btn="true"
-                :additional-btn-alt="'カテゴリを追加する'"
+                :checkbox-data-arr="categoryPanelCheckBoxData"
+                :menu-btn="{
+                    alt: 'カテゴリを追加する',
+                }"
             />
         </div>
         <div class="main-content__body">
-            <StatePanel />
-            <StatePanel />
-            <StatePanel />
-            <StatePanel />
+            <StatePanel
+                v-for="statePanelItem in filteringStatePanel"
+                :key="statePanelItem.id"
+                :label="statePanelItem.label"
+                :sort-order="statePanelItem.sortOrder"
+                :task-list="filteringTaskList[statePanelItem.id - 1]"
+            />
         </div>
     </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
-export default Vue.extend({});
+import { mapState, mapGetters } from 'vuex';
+
+export default Vue.extend({
+    computed: {
+        ...mapState(['statePanel', 'categoryList', 'taskList']),
+        ...mapGetters([
+            'filteringStatePanel',
+            'filteringTaskList',
+            'statePanelCheckBoxData',
+            'categoryPanelCheckBoxData',
+        ]),
+    },
+});
 </script>
 
 <style lang="scss" scoped>

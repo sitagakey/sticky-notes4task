@@ -2,7 +2,7 @@
     <div class="state-panel">
         <div class="state-panel__head">
             <div class="state-panel__head-detail">
-                <p class="state-panel__label">未対応</p>
+                <p class="state-panel__label">{{ label }}</p>
                 <ul class="state-panel__btn">
                     <li><AdditionalBtn /></li>
                 </ul>
@@ -12,14 +12,33 @@
             </div>
         </div>
         <ul class="state-panel__body">
-            <li><TaskPanel /></li>
+            <li v-for="task in taskList" :key="task.registerDate">
+                <TaskPanel :task-data="task" />
+            </li>
         </ul>
     </div>
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
-export default Vue.extend({});
+import Vue, { PropOptions } from 'vue';
+import { Task } from '~/types/global';
+
+export default Vue.extend({
+    props: {
+        label: {
+            type: String,
+            required: true,
+        },
+        sortOrder: {
+            type: String,
+            required: true,
+        },
+        taskList: {
+            type: Array,
+            required: true,
+        } as PropOptions<Task[]>,
+    },
+});
 </script>
 
 <style lang="scss" scoped>

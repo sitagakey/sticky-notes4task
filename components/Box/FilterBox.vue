@@ -2,23 +2,17 @@
     <div class="filter-box">
         <div class="filter-box__head">
             <p class="filter-box__label">{{ label }}</p>
-            <MenuBtn v-if="additionalBtn" :alt="additionalBtnAlt" />
+            <MenuBtn v-if="menuBtn" :alt="menuBtnAlt" />
         </div>
         <div class="filter-box__body">
-            <CheckboxList :checkbox-data-arr="filterItemData" />
+            <CheckboxList :checkbox-data-arr="checkboxDataArr" />
         </div>
     </div>
 </template>
 
 <script lang="ts">
 import Vue, { PropOptions } from 'vue';
-
-interface FilterItemData {
-    id: number;
-    label: string;
-    isChecked: boolean;
-    onChange: () => void;
-}
+import { CheckboxData, MenuBtn } from '~/types/global';
 
 export default Vue.extend({
     props: {
@@ -26,18 +20,14 @@ export default Vue.extend({
             type: String,
             required: true,
         },
-        filterItemData: {
+        checkboxDataArr: {
             type: Array,
             required: true,
-        } as PropOptions<FilterItemData[]>,
-        additionalBtn: {
-            type: Boolean,
-            default: false,
-        },
-        additionalBtnAlt: {
-            type: String,
-            default: '追加',
-        },
+        } as PropOptions<CheckboxData[]>,
+        menuBtn: {
+            type: Object || null,
+            default: null,
+        } as PropOptions<MenuBtn[] | null>,
     },
 });
 </script>
@@ -49,7 +39,6 @@ export default Vue.extend({
     }
     &__head {
         display: flex;
-        // justify-content: space-between;
         align-items: center;
 
         > *:not(:first-child) {

@@ -3,12 +3,13 @@
         <Header />
         <MainContent />
         <Footer />
-        <ConfigBox />
     </div>
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+// import Vue from 'vue';
+// import { mapState } from 'vuex';
 
-export default Vue.extend({});
+// export default Vue.extend({
+// });
 </script>

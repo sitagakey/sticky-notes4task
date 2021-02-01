@@ -6,7 +6,7 @@
                 :key="item.id"
                 class="checkbox-list__item"
             >
-                <Checkbox :label="item.label" />
+                <Checkbox :label="item.label" :checked="item.checked" />
             </li>
         </ul>
     </div>
@@ -14,24 +14,14 @@
 
 <script lang="ts">
 import Vue, { PropOptions } from 'vue';
-
-interface CheckboxDataArr {
-    id: number;
-    label: string;
-    isChecked: boolean;
-    onChange: () => void;
-}
+import { CheckboxData } from '~/types/global';
 
 export default Vue.extend({
     props: {
-        label: {
-            type: String,
-            required: true,
-        },
         checkboxDataArr: {
             type: Array,
             required: true,
-        } as PropOptions<CheckboxDataArr[]>,
+        } as PropOptions<CheckboxData[]>,
     },
 });
 </script>

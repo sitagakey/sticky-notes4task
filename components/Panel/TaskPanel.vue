@@ -1,46 +1,62 @@
 <template>
     <div class="task-panel">
         <div class="task-panel__head">
-            <div>
-                <p class="task-panel__label">英語の教科書3ページ</p>
-                <p class="task-panel__desc">英語の教科書を毎日やる</p>
+            <div class="task-panel__head-group">
+                <p class="task-panel__label">{{ taskData.label }}</p>
+                <ul class="task-panel__btn">
+                    <li><ArrowBtn /></li>
+                    <li><MenuBtn /></li>
+                </ul>
             </div>
-            <ul class="task-panel__btn">
-                <li><ArrowBtn /></li>
-                <li><MenuBtn /></li>
-            </ul>
+            <p v-if="taskData.existDescription" class="task-panel__desc">
+                {{ taskData.description }}
+            </p>
         </div>
-        <div class="task-panel__body">
+        <div v-if="existBody" class="task-panel__body">
             <div class="task-panel__detail">
                 <dl class="task-panel__detail-inr">
-                    <div class="task-panel__detail-item">
+                    <div
+                        v-if="taskData.existRegisterDate"
+                        class="task-panel__detail-item"
+                    >
                         <dt class="task-panel__detail-label">登録日</dt>
-                        <dd class="task-panel__detail-desc">2021/01/01</dd>
+                        <dd class="task-panel__detail-desc">
+                            {{ registerDate }}
+                        </dd>
                     </div>
-                    <div class="task-panel__detail-item">
+                    <div
+                        v-if="taskData.existStartDate"
+                        class="task-panel__detail-item"
+                    >
                         <dt class="task-panel__detail-label">開始日</dt>
-                        <dd class="task-panel__detail-desc">2021/01/01</dd>
+                        <dd class="task-panel__detail-desc">
+                            {{ startDate }}
+                        </dd>
                     </div>
-                    <div class="task-panel__detail-item">
+                    <div
+                        v-if="taskData.existExpirationDate"
+                        class="task-panel__detail-item"
+                    >
                         <dt class="task-panel__detail-label">期限日</dt>
-                        <dd class="task-panel__detail-desc">2021/01/01</dd>
+                        <dd class="task-panel__detail-desc">
+                            {{ expirationDate }}
+                        </dd>
                     </div>
-                    <div class="task-panel__detail-item">
+                    <div
+                        v-if="taskData.existCategory"
+                        class="task-panel__detail-item"
+                    >
                         <dt class="task-panel__detail-label">カテゴリー</dt>
-                        <dd class="task-panel__detail-desc">未分類</dd>
+                        <dd class="task-panel__detail-desc">
+                            {{ taskData.category }}
+                        </dd>
                     </div>
                 </dl>
             </div>
         </div>
-        <div class="task-panel__foot">
+        <div v-if="existFoot" class="task-panel__foot">
             <div class="task-panel__controller">
                 <ul class="task-panel__controller-inr">
-                    <li class="task-panel__controller-item">
-                        <ArrowBtn state="top" />
-                    </li>
-                    <li class="task-panel__controller-item">
-                        <ArrowBtn state="bottom" />
-                    </li>
                     <li class="task-panel__controller-item">
                         <ArrowBtn state="left" />
                     </li>
@@ -54,8 +70,49 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
-export default Vue.extend({});
+import Vue, { PropOptions } from 'vue';
+import { formatDate } from '~/assets/ts/utils';
+import { Task } from '~/types/global';
+
+export default Vue.extend({
+    props: {
+        taskData: {
+            type: Object,
+            required: true,
+        } as PropOptions<Task>,
+    },
+    computed: {
+        existBody() {
+            const {
+                existRegisterDate,
+                existStartDate,
+                existExpirationDate,
+                existCategory,
+            } = this.taskData;
+
+            return (
+                existRegisterDate ||
+                existStartDate ||
+                existExpirationDate ||
+                existCategory
+            );
+        },
+        existFoot() {
+            const { existCategory } = this.taskData;
+
+            return existCategory;
+        },
+        registerDate() {
+            return formatDate(this.taskData.registerDate);
+        },
+        startDate() {
+            return formatDate(this.taskData.startDate);
+        },
+        expirationDate() {
+            return formatDate(this.taskData.expirationDate);
+        },
+    },
+});
 </script>
 
 <style lang="scss" scoped>
@@ -64,9 +121,11 @@ export default Vue.extend({});
     border: 1px solid $c-gray;
 
     &__head {
+        padding: $p-sm;
+    }
+    &__head-group {
         display: flex;
         justify-content: space-between;
-        padding: $p-sm;
     }
     &__label {
         font-size: 1.8rem;
@@ -82,6 +141,7 @@ export default Vue.extend({});
     }
     &__btn {
         display: flex;
+        margin-left: $m-xs;
 
         > *:not(:first-child) {
             margin-left: $m-xs;

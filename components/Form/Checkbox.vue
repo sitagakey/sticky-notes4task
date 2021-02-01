@@ -1,6 +1,6 @@
 <template>
     <label class="checkbox">
-        <input class="checkbox__input" type="checkbox" />
+        <input class="checkbox__input" type="checkbox" :checked="checked" />
         <span class="checkbox__label">{{ label }}</span>
     </label>
 </template>
@@ -13,6 +13,10 @@ export default Vue.extend({
         label: {
             type: String,
             default: null,
+        },
+        checked: {
+            type: Boolean,
+            default: false,
         },
     },
 });

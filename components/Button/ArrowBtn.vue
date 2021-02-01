@@ -51,23 +51,14 @@ export default Vue.extend({
         position: absolute;
         transform: rotate(45deg);
         background-image: linear-gradient(
-                45deg,
-                #000 0%,
-                #000 20%,
-                transparent 20%,
-                transparent 80%,
-                #000 80%,
-                #000 100%
-            ),
-            linear-gradient(
-                135deg,
-                #000 0%,
-                #000 20%,
-                transparent 20%,
-                transparent 80%,
-                #000 80%,
-                #000 100%
-            );
+            45deg,
+            #000 0%,
+            #000 30%,
+            transparent 30%,
+            transparent 70%,
+            #000 70%,
+            #000 100%
+        );
         top: calc(50% - 20%);
         left: calc(50% - 20%);
     }
