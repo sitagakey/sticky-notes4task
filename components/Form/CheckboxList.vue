@@ -6,7 +6,11 @@
                 :key="item.id"
                 class="checkbox-list__item"
             >
-                <Checkbox :label="item.label" :checked="item.checked" />
+                <Checkbox
+                    :checked="item.checked"
+                    :label="item.label"
+                    @input="onInput(item.id, $event)"
+                />
             </li>
         </ul>
     </div>
@@ -22,6 +26,11 @@ export default Vue.extend({
             type: Array,
             required: true,
         } as PropOptions<CheckboxData[]>,
+    },
+    methods: {
+        onInput(id: number, isActive: boolean) {
+            this.$emit('input', { id, isActive });
+        },
     },
 });
 </script>

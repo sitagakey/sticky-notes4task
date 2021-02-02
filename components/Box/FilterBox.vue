@@ -2,10 +2,13 @@
     <div class="filter-box">
         <div class="filter-box__head">
             <p class="filter-box__label">{{ label }}</p>
-            <MenuBtn v-if="menuBtn" :alt="menuBtnAlt" />
+            <MenuBtn v-if="menuBtn" :alt="menuBtn.alt" @click="menuBtn.click" />
         </div>
         <div class="filter-box__body">
-            <CheckboxList :checkbox-data-arr="checkboxDataArr" />
+            <CheckboxList
+                :checkbox-data-arr="checkboxDataArr"
+                @input="$emit('input', $event)"
+            />
         </div>
     </div>
 </template>
@@ -27,7 +30,7 @@ export default Vue.extend({
         menuBtn: {
             type: Object || null,
             default: null,
-        } as PropOptions<MenuBtn[] | null>,
+        } as PropOptions<MenuBtn | null>,
     },
 });
 </script>

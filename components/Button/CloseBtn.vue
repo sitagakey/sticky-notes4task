@@ -1,5 +1,5 @@
 <template>
-    <button class="close-btn">
+    <button class="close-btn" @click="$emit('click')">
         <span class="close-btn__alt">{{ alt }}</span>
     </button>
 </template>

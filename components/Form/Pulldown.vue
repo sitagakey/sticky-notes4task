@@ -1,15 +1,58 @@
 <template>
     <div class="pulldown">
-        <select id="pulldown__todo" class="pulldown__content" title="並び替え">
-            <option value="deadline-desc">期限日降順</option>
-            <option value="deadline-asc">期限日昇順</option>
+        <select
+            ref="pulldownContent"
+            class="pulldown__content"
+            :title="title"
+            @change="$emit('change', $event.target.value)"
+        >
+            <option
+                v-for="option in options"
+                :key="option.value"
+                :value="option.value"
+                :selected="option.value === selected"
+            >
+                {{ option.label }}
+            </option>
         </select>
     </div>
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
-export default Vue.extend({});
+import Vue, { PropOptions } from 'vue';
+import { PulldownOption } from '~/types/global';
+
+export default Vue.extend({
+    props: {
+        options: {
+            type: Array,
+            required: true,
+        } as PropOptions<PulldownOption[]>,
+        selected: {
+            type: String,
+            default: '',
+        },
+        title: {
+            type: String,
+            required: true,
+        },
+    },
+    updated() {
+        const value = (this.$refs.pulldownContent as HTMLSelectElement).value;
+
+        this.$emit('change', value);
+    },
+    mounted() {
+        if (this.selected === '') {
+            this.$nextTick(() => {
+                const value = (this.$refs.pulldownContent as HTMLSelectElement)
+                    .value;
+
+                this.$emit('change', value);
+            });
+        }
+    },
+});
 </script>
 
 <style lang="scss" scoped>

@@ -2,11 +2,14 @@
     <div class="config-box">
         <div class="config-box__inr">
             <div class="config-box__head">
-                <p class="config-box__label">タイトルが入ります</p>
-                <CloseBtn />
+                <p class="config-box__label">{{ label }}</p>
+                <CloseBtn :alt="`${label}を閉じる`" @click="$emit('close')" />
             </div>
             <div class="config-box__body">
-                <div class="config-box__sec">
+                <div
+                    v-if="taskAddConfig || taskEditConfig"
+                    class="config-box__sec"
+                >
                     <div class="config-box__sec-item">
                         <p class="config-box__sec-label">
                             課題名<em><span>※</span>必須</em>
@@ -44,28 +47,49 @@
                         <Checkbox label="コントローラーを表示する" />
                     </div>
                 </div>
-                <div class="config-box__sec">
-                    <div class="config-box__sec-item">
-                        <p class="config-box__sec-label">課題の追加</p>
-                        <TextInput />
-                        <PrimaryBtn label="このカテゴリを追加する" />
+                <div v-if="taskAddConfig" class="config-box__sec">
+                    <div class="config-box__sec-item is-center">
+                        <PrimaryBtn label="課題を追加する" />
                     </div>
                 </div>
-                <div class="config-box__sec">
+                <div v-if="taskEditConfig" class="config-box__sec">
                     <div class="config-box__sec-item">
                         <p class="config-box__sec-label">課題の削除</p>
-                        <Pulldown />
                         <DengerBtn label="この課題を削除する" />
                     </div>
                 </div>
-                <div class="config-box__sec">
+                <div v-if="taskEditConfig" class="config-box__sec">
                     <div class="config-box__sec-item is-center">
                         <PrimaryBtn label="設定を反映する" />
                     </div>
                 </div>
-                <div class="config-box__sec">
-                    <div class="config-box__sec-item is-center">
-                        <PrimaryBtn label="課題を追加する" />
+                <div v-if="categoryConfig" class="config-box__sec">
+                    <div class="config-box__sec-item">
+                        <p class="config-box__sec-label">カテゴリの追加</p>
+                        <TextInput
+                            v-model="addCategoryLabel"
+                            placeholder="カテゴリ名を入力してください"
+                        />
+                        <PrimaryBtn
+                            label="このカテゴリを追加する"
+                            :disabled="addCategoryLabel === ''"
+                            @click="addCategoryProcessing"
+                        />
+                    </div>
+                </div>
+                <div v-if="categoryConfig" class="config-box__sec">
+                    <div class="config-box__sec-item">
+                        <p class="config-box__sec-label">カテゴリの削除</p>
+                        <Pulldown
+                            :options="pulldownOptions"
+                            title="カテゴリ"
+                            @change="chnageDeleteCategoryId"
+                        />
+                        <DengerBtn
+                            label="このカテゴリを削除する"
+                            :disabled="pulldownOptions.length === 0"
+                            @click="deleteCategory(deleteCategoryId)"
+                        />
                     </div>
                 </div>
             </div>
@@ -75,8 +99,57 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import { mapState, mapGetters, mapMutations } from 'vuex';
+import { PulldownOption, Category } from '~/types/global';
 
-export default Vue.extend({});
+export default Vue.extend({
+    props: {
+        label: {
+            type: String,
+            required: true,
+        },
+        categoryConfig: {
+            type: Boolean,
+            required: true,
+        },
+        taskAddConfig: {
+            type: Boolean,
+            required: true,
+        },
+        taskEditConfig: {
+            type: Boolean,
+            required: true,
+        },
+    },
+    data() {
+        return {
+            addCategoryLabel: '',
+            deleteCategoryId: 0,
+        };
+    },
+    computed: {
+        ...mapState(['configBox']),
+        ...mapGetters(['deletableCategoryList']),
+        pulldownOptions(): PulldownOption[] {
+            return this.deletableCategoryList.map((category: Category) => {
+                return {
+                    label: category.label,
+                    value: String(category.id),
+                };
+            });
+        },
+    },
+    methods: {
+        ...mapMutations(['deleteCategory', 'addCategory']),
+        chnageDeleteCategoryId(id: string) {
+            this.deleteCategoryId = Number(id);
+        },
+        addCategoryProcessing() {
+            this.addCategory(this.addCategoryLabel);
+            this.addCategoryLabel = '';
+        },
+    },
+});
 </script>
 
 <style lang="scss" scoped>

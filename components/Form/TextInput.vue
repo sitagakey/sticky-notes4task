@@ -1,6 +1,29 @@
 <template>
-    <input class="text-input" type="text" />
+    <input
+        class="text-input"
+        type="text"
+        :placeholder="placeholder"
+        :value="value"
+        @input="$emit('input', $event.target.value)"
+    />
 </template>
+
+<script lang="ts">
+import Vue from 'vue';
+
+export default Vue.extend({
+    props: {
+        value: {
+            type: String,
+            default: '',
+        },
+        placeholder: {
+            type: String,
+            default: '',
+        },
+    },
+});
+</script>
 
 <style lang="scss" scoped>
 .text-input {

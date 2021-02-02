@@ -1,6 +1,11 @@
 <template>
     <label class="checkbox">
-        <input class="checkbox__input" type="checkbox" :checked="checked" />
+        <input
+            class="checkbox__input"
+            type="checkbox"
+            :checked="checked"
+            @input="$emit('input', !checked)"
+        />
         <span class="checkbox__label">{{ label }}</span>
     </label>
 </template>

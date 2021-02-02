@@ -8,7 +8,17 @@
                 </ul>
             </div>
             <div class="state-panel__order">
-                <Pulldown />
+                <Pulldown
+                    :options="pulldownOptions"
+                    :selected="sortType"
+                    title="課題の並び順"
+                    @input="
+                        changeStatePanelSortType({
+                            id: stateId,
+                            sortType: $event,
+                        })
+                    "
+                />
             </div>
         </div>
         <ul class="state-panel__body">
@@ -21,15 +31,20 @@
 
 <script lang="ts">
 import Vue, { PropOptions } from 'vue';
-import { Task } from '~/types/global';
+import { mapMutations } from 'vuex';
+import { Task, PulldownOption } from '~/types/global';
 
 export default Vue.extend({
     props: {
+        stateId: {
+            type: Number,
+            required: true,
+        },
         label: {
             type: String,
             required: true,
         },
-        sortOrder: {
+        sortType: {
             type: String,
             required: true,
         },
@@ -38,6 +53,39 @@ export default Vue.extend({
             required: true,
         } as PropOptions<Task[]>,
     },
+    computed: {
+        pulldownOptions(): PulldownOption[] {
+            return [
+                {
+                    label: '登録日（昇順）',
+                    value: 'registerAsc',
+                },
+                {
+                    label: '登録日（降順）',
+                    value: 'registerDesc',
+                },
+                {
+                    label: '開始日（昇順）',
+                    value: 'startDateAsc',
+                },
+                {
+                    label: '開始日（降順）',
+                    value: 'startDateDesc',
+                },
+                {
+                    label: '期限日（昇順）',
+                    value: 'expirationAsc',
+                },
+                {
+                    label: '期限日（降順）',
+                    value: 'expirationDesc',
+                },
+            ];
+        },
+    },
+    methods: {
+        ...mapMutations(['changeStatePanelSortType']),
+    },
 });
 </script>
 
@@ -45,6 +93,7 @@ export default Vue.extend({
 .state-panel {
     box-shadow: $shadow-sm;
     border-radius: 4px;
+    background: $c-white;
 
     &__head {
         padding: $p-sm $p-sm $p-lg $p-sm;

@@ -24,6 +24,11 @@ button {
     border: 0;
     background: transparent;
     cursor: pointer;
+
+    &:disabled {
+        background-color: $c-gray !important;
+        cursor: default !important;
+    }
 }
 ul {
     list-style: none;

@@ -1,5 +1,5 @@
 <template>
-    <button class="denger-btn">
+    <button class="denger-btn" :disabled="disabled" @click="$emit('click')">
         {{ label }}
     </button>
 </template>
@@ -12,6 +12,10 @@ export default Vue.extend({
         label: {
             type: String,
             required: true,
+        },
+        disabled: {
+            type: Boolean,
+            default: false,
         },
     },
 });

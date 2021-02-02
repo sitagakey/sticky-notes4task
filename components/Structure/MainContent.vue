@@ -1,42 +1,72 @@
 <template>
-    <div class="main-content">
+    <main class="main-content">
         <div class="main-content__head">
             <FilterBox
                 :label="'状態'"
                 :checkbox-data-arr="statePanelCheckBoxData"
+                @input="changeStatePanelState"
             />
             <FilterBox
                 :label="'カテゴリ'"
                 :checkbox-data-arr="categoryPanelCheckBoxData"
                 :menu-btn="{
-                    alt: 'カテゴリを追加する',
+                    alt: 'カテゴリの設定',
+                    click: openCategoryConfig,
                 }"
+                @input="changeCategoryState"
             />
         </div>
         <div class="main-content__body">
-            <StatePanel
-                v-for="statePanelItem in filteringStatePanel"
-                :key="statePanelItem.id"
-                :label="statePanelItem.label"
-                :sort-order="statePanelItem.sortOrder"
-                :task-list="filteringTaskList[statePanelItem.id - 1]"
-            />
+            <transition-group
+                class="main-content__body-inr"
+                tag="div"
+                name="state-panel-group"
+            >
+                <StatePanel
+                    v-for="statePanel in filteringStatePanelList"
+                    :key="statePanel.id"
+                    :state-id="statePanel.id"
+                    :label="statePanel.label"
+                    :sort-type="statePanel.sortType"
+                    :task-list="filteringTaskList[statePanel.id - 1]"
+                />
+            </transition-group>
         </div>
-    </div>
+
+        <transition name="config-box">
+            <ConfigBox
+                v-if="configBox.isOpen"
+                :label="configBox.label"
+                :category-config="configBox.categoryConfig"
+                :task-add-config="configBox.taskAddConfig"
+                :task-edit-config="configBox.taskEditConfig"
+                @close="closeConfigBox"
+            />
+        </transition>
+    </main>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
-import { mapState, mapGetters } from 'vuex';
+import { mapState, mapGetters, mapMutations } from 'vuex';
 
 export default Vue.extend({
     computed: {
-        ...mapState(['statePanel', 'categoryList', 'taskList']),
+        ...mapState(['categoryList', 'taskList', 'configBox']),
         ...mapGetters([
-            'filteringStatePanel',
+            'filteringStatePanelList',
             'filteringTaskList',
             'statePanelCheckBoxData',
             'categoryPanelCheckBoxData',
+        ]),
+    },
+    methods: {
+        ...mapMutations([
+            'changeStatePanelState',
+            'changeCategoryState',
+            'addCategory',
+            'openCategoryConfig',
+            'closeConfigBox',
         ]),
     },
 });
@@ -52,24 +82,50 @@ export default Vue.extend({
         padding: $p-md;
     }
     &__body {
-        display: flex;
-        align-items: flex-start;
         overflow: auto;
-        padding: $p-md 0 $p-md $p-md;
 
-        > * {
-            min-width: 300px;
-            width: 100%;
+        &-inr {
+            display: flex;
+            align-items: flex-start;
+            padding: $p-md 0 $p-md $p-md;
+
+            > * {
+                min-width: 300px;
+                width: 100%;
+            }
+            > *:not(:first-child) {
+                margin-left: $m-md;
+            }
+            // @FIXME 右paddingが表示されないため擬似要素で代替
+            &:after {
+                content: '';
+                display: block;
+                min-width: $m-md;
+                height: 1px;
+            }
         }
-        > *:not(:first-child) {
-            margin-left: $m-md;
+    }
+    .config-box {
+        &-enter-active,
+        &-leave-active {
+            transition: 0.1s;
         }
-        // 右paddingが表示されないため擬似要素で代替
-        &:after {
-            content: '';
-            display: block;
-            min-width: $m-md;
-            height: 1px;
+        &-enter,
+        &-leave-to {
+            opacity: 0;
+            // transform: translateY(60px);
+        }
+    }
+    .state-panel-group {
+        &-enter-active,
+        &-leave-active,
+        &-move {
+            transition: 0.4s;
+        }
+        &-enter,
+        &-leave-to {
+            opacity: 0;
+            transform: translateY(60px);
         }
     }
 }

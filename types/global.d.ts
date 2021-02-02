@@ -1,17 +1,16 @@
-export type SortOrder =
+export type SortType =
     | 'registerAsc'
     | 'registerDesc'
     | 'startDateAsc'
     | 'startDateDesc'
     | 'expirationAsc'
     | 'expirationDesc';
-export interface StatePanelItem {
+export interface StatePanel {
     id: number;
     label: string;
     isActive: boolean;
-    sortOrder: SortOrder;
+    sortType: SortType;
 }
-export type StatePanel = StatePanelItem[];
 export interface Task {
     label: string;
     description: string;
@@ -39,4 +38,16 @@ export interface CheckboxData {
 }
 export interface MenuBtn {
     alt: string;
+    click: () => void;
+}
+export interface PulldownOption {
+    label: string;
+    value: string;
+}
+export interface ConfigBox {
+    isOpen: boolean;
+    label: string;
+    categoryConfig: boolean;
+    taskAddConfig: boolean;
+    taskEditConfig: boolean;
 }
