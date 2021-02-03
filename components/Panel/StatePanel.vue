@@ -4,7 +4,7 @@
             <div class="state-panel__head-detail">
                 <p class="state-panel__label">{{ label }}</p>
                 <ul class="state-panel__btn">
-                    <li><AdditionalBtn /></li>
+                    <li><AdditionalBtn @click="openTaskAddConfig" /></li>
                 </ul>
             </div>
             <div class="state-panel__order">
@@ -84,7 +84,7 @@ export default Vue.extend({
         },
     },
     methods: {
-        ...mapMutations(['changeStatePanelSortType']),
+        ...mapMutations(['changeStatePanelSortType', 'openTaskAddConfig']),
     },
 });
 </script>

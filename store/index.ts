@@ -1,19 +1,23 @@
 import { STATE_ID, CATEGORY_WHITE_LIST } from '~/assets/ts/variables';
+import { formatDate } from '~/assets/ts/utils';
 import {
     StatePanel,
     Task,
     Category,
     SortType,
     ConfigBox,
+    Toast,
 } from '~/types/global';
 
 type State = {
+    toastList: Toast[];
     configBox: ConfigBox;
     statePanelList: StatePanel[];
     categoryList: Category[];
     taskList: Task[];
 };
 export const state = (): State => ({
+    toastList: [],
     configBox: {
         isOpen: false,
         label: '',
@@ -66,6 +70,7 @@ export const state = (): State => ({
     ],
     taskList: [
         {
+            id: 1,
             label: '英語',
             description: '毎日3ページ教科書をやる',
             existDescription: true,
@@ -186,18 +191,11 @@ export const mutations = {
         state.categoryList.push(category);
     },
     deleteCategory(state: State, id: number) {
-        if (id <= 0) {
-            return;
-        }
-
         const idx = state.categoryList.findIndex((category) => {
             return category.id === id;
         });
-        const confirmMessage = `「${state.categoryList[idx].label}」カテゴリを本当に削除しますか？`;
 
-        if (confirm(confirmMessage)) {
-            state.categoryList.splice(idx, 1);
-        }
+        state.categoryList.splice(idx, 1);
     },
     changeCategoryState(
         state: State,
@@ -209,7 +207,10 @@ export const mutations = {
             isActive: boolean;
         }
     ) {
-        const targetCategory = state.categoryList[id - 1];
+        const idx = state.categoryList.findIndex(
+            (category) => category.id === id
+        );
+        const targetCategory = state.categoryList[idx];
 
         targetCategory.isActive = isActive;
     },
@@ -220,11 +221,29 @@ export const mutations = {
         state.configBox.taskAddConfig = false;
         state.configBox.taskEditConfig = false;
     },
+    openTaskAddConfig(state: State) {
+        state.configBox.isOpen = true;
+        state.configBox.label = '課題を追加する';
+        state.configBox.categoryConfig = false;
+        state.configBox.taskAddConfig = true;
+        state.configBox.taskEditConfig = false;
+    },
     closeConfigBox(state: State) {
         state.configBox.isOpen = false;
         state.configBox.label = '';
         state.configBox.categoryConfig = false;
         state.configBox.taskAddConfig = false;
         state.configBox.taskEditConfig = false;
+    },
+    addToast(state: State, label: string) {
+        state.toastList.unshift({
+            id: formatDate(new Date(), 'yyyy/MM/dd HH:mm:ss.SSS'),
+            label,
+        });
+    },
+    deleteToast(state: State, id: string) {
+        const idx = state.toastList.findIndex((toast) => toast.id === id);
+
+        state.toastList.splice(idx, 1);
     },
 };

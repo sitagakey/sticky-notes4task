@@ -103,13 +103,13 @@ export default Vue.extend({
             return existCategory;
         },
         registerDate() {
-            return formatDate(this.taskData.registerDate);
+            return formatDate(this.taskData.registerDate, 'yyyy/MM/dd');
         },
         startDate() {
-            return formatDate(this.taskData.startDate);
+            return formatDate(this.taskData.startDate, 'yyyy/MM/dd');
         },
         expirationDate() {
-            return formatDate(this.taskData.expirationDate);
+            return formatDate(this.taskData.expirationDate, 'yyyy/MM/dd');
         },
     },
 });

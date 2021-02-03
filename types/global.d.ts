@@ -12,6 +12,7 @@ export interface StatePanel {
     sortType: SortType;
 }
 export interface Task {
+    id: number;
     label: string;
     description: string;
     existDescription: boolean;
@@ -50,4 +51,8 @@ export interface ConfigBox {
     categoryConfig: boolean;
     taskAddConfig: boolean;
     taskEditConfig: boolean;
+}
+export interface Toast {
+    id: string;
+    label: string;
 }

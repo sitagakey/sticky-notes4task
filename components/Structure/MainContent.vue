@@ -33,16 +33,16 @@
             </transition-group>
         </div>
 
-        <transition name="config-box">
-            <ConfigBox
-                v-if="configBox.isOpen"
-                :label="configBox.label"
-                :category-config="configBox.categoryConfig"
-                :task-add-config="configBox.taskAddConfig"
-                :task-edit-config="configBox.taskEditConfig"
-                @close="closeConfigBox"
-            />
-        </transition>
+        <ConfigBox
+            :is-open="configBox.isOpen"
+            :label="configBox.label"
+            :category-config="configBox.categoryConfig"
+            :task-add-config="configBox.taskAddConfig"
+            :task-edit-config="configBox.taskEditConfig"
+            @close="closeConfigBox"
+        />
+
+        <ToastList :list-item-arr="toastList" @close="deleteToast" />
     </main>
 </template>
 
@@ -52,7 +52,7 @@ import { mapState, mapGetters, mapMutations } from 'vuex';
 
 export default Vue.extend({
     computed: {
-        ...mapState(['categoryList', 'taskList', 'configBox']),
+        ...mapState(['categoryList', 'taskList', 'configBox', 'toastList']),
         ...mapGetters([
             'filteringStatePanelList',
             'filteringTaskList',
@@ -67,6 +67,7 @@ export default Vue.extend({
             'addCategory',
             'openCategoryConfig',
             'closeConfigBox',
+            'deleteToast',
         ]),
     },
 });
@@ -103,17 +104,6 @@ export default Vue.extend({
                 min-width: $m-md;
                 height: 1px;
             }
-        }
-    }
-    .config-box {
-        &-enter-active,
-        &-leave-active {
-            transition: 0.1s;
-        }
-        &-enter,
-        &-leave-to {
-            opacity: 0;
-            // transform: translateY(60px);
         }
     }
     .state-panel-group {
