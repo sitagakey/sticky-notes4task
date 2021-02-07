@@ -1,6 +1,7 @@
 <template>
     <div class="pulldown">
         <select
+            :id="id"
             ref="pulldownContent"
             class="pulldown__content"
             :title="title"
@@ -24,6 +25,10 @@ import { PulldownOption } from '~/types/global';
 
 export default Vue.extend({
     props: {
+        id: {
+            type: String,
+            default: '',
+        },
         options: {
             type: Array,
             required: true,

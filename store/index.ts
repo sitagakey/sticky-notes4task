@@ -84,6 +84,7 @@ export const state = (): State => ({
             categoryId: 2,
             existCategory: true,
             stateId: 1,
+            existController: true,
         },
     ],
 });

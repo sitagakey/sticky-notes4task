@@ -7,7 +7,7 @@
                 class="checkbox-list__item"
             >
                 <Checkbox
-                    :checked="item.checked"
+                    :value="item.checked"
                     :label="item.label"
                     @input="onInput(item.id, $event)"
                 />

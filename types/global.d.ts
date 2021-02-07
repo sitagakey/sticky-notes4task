@@ -18,14 +18,15 @@ export interface Task {
     existDescription: boolean;
     registerDate: Date;
     existRegisterDate: boolean;
-    startDate: Date;
+    startDate: Date | '';
     existStartDate: boolean;
-    expirationDate: Date;
+    expirationDate: Date | '';
     existExpirationDate: boolean;
     category: string;
     categoryId: number;
     existCategory: boolean;
     stateId: number;
+    existController: boolean;
 }
 export interface Category {
     id: number;

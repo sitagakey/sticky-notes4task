@@ -15,39 +15,104 @@
                         class="config-box__sec"
                     >
                         <div class="config-box__sec-item">
-                            <p class="config-box__sec-label">
+                            <label
+                                class="config-box__sec-label"
+                                for="config-box__task-label"
+                            >
                                 課題名<em><span>※</span>必須</em>
+                            </label>
+                            <TextInput
+                                id="config-box__task-label"
+                                v-model="task.label"
+                            />
+                        </div>
+                        <div class="config-box__sec-item">
+                            <label
+                                class="config-box__sec-label"
+                                for="config-box__task-detailt"
+                            >
+                                課題情報
+                            </label>
+                            <TextInput
+                                id="config-box__task-detailt"
+                                v-model="task.description"
+                            />
+                            <Checkbox
+                                v-model="task.existDescription"
+                                label="課題情報を表示する"
+                            />
+                        </div>
+                        <div class="config-box__sec-item">
+                            <label
+                                class="config-box__sec-label"
+                                for="config-box__register-date"
+                            >
+                                登録日
+                            </label>
+                            <p id="config-box__register-date">
+                                {{ registerDate }}
                             </p>
-                            <TextInput />
+                            <Checkbox
+                                v-model="task.existRegisterDate"
+                                label="登録日を表示する"
+                            />
                         </div>
                         <div class="config-box__sec-item">
-                            <p class="config-box__sec-label">課題情報</p>
-                            <TextInput />
-                            <Checkbox label="課題情報を表示する" />
+                            <label
+                                class="config-box__sec-label"
+                                for="config-box__start-date"
+                            >
+                                開始日
+                            </label>
+                            <Datepicker
+                                id="config-box__start-date"
+                                v-model="task.startDate"
+                            />
+                            <Checkbox
+                                v-model="task.existStartDate"
+                                label="開始日を表示する"
+                            />
                         </div>
                         <div class="config-box__sec-item">
-                            <p class="config-box__sec-label">登録日</p>
-                            <p>2021/01/29</p>
-                            <Checkbox label="登録日表示する" />
+                            <label
+                                class="config-box__sec-label"
+                                for="config-box__expiration-date"
+                            >
+                                期限日
+                            </label>
+                            <Datepicker
+                                id="config-box__expiration-date"
+                                v-model="task.expirationDate"
+                            />
+                            <Checkbox
+                                v-model="task.existExpirationDate"
+                                label="期限日を表示する"
+                            />
                         </div>
                         <div class="config-box__sec-item">
-                            <p class="config-box__sec-label">開始日</p>
-                            <Datepicker />
-                            <Checkbox label="開始日を表示する" />
+                            <label
+                                class="config-box__sec-label"
+                                for="config-box__category"
+                            >
+                                カテゴリー
+                            </label>
+                            <Pulldown
+                                id="config-box__category"
+                                :selected="task.categoryId"
+                            />
+                            <Checkbox
+                                v-model="task.existCategory"
+                                label="カテゴリーを表示する"
+                            />
                         </div>
                         <div class="config-box__sec-item">
-                            <p class="config-box__sec-label">期限日</p>
-                            <Datepicker />
-                            <Checkbox label="期限日を表示する" />
-                        </div>
-                        <div class="config-box__sec-item">
-                            <p class="config-box__sec-label">カテゴリー</p>
-                            <Pulldown />
-                            <Checkbox label="カテゴリーを表示する" />
-                        </div>
-                        <div class="config-box__sec-item">
-                            <p class="config-box__sec-label">コントローラー</p>
-                            <Checkbox label="コントローラーを表示する" />
+                            <label class="config-box__sec-label">
+                                コントローラー
+                            </label>
+                            <Checkbox
+                                v-model="task.existController"
+                                label="コントローラーを表示する"
+                            />
                         </div>
                     </div>
                     <div v-if="taskAddConfig" class="config-box__sec">
@@ -57,7 +122,9 @@
                     </div>
                     <div v-if="taskEditConfig" class="config-box__sec">
                         <div class="config-box__sec-item">
-                            <p class="config-box__sec-label">課題の削除</p>
+                            <label class="config-box__sec-label">
+                                課題の削除
+                            </label>
                             <DengerBtn label="この課題を削除する" />
                         </div>
                     </div>
@@ -68,7 +135,9 @@
                     </div>
                     <div v-if="categoryConfig" class="config-box__sec">
                         <div class="config-box__sec-item">
-                            <p class="config-box__sec-label">カテゴリの追加</p>
+                            <label class="config-box__sec-label">
+                                カテゴリの追加
+                            </label>
                             <TextInput
                                 v-model="addCategoryLabel"
                                 placeholder="カテゴリ名を入力してください"
@@ -82,7 +151,9 @@
                     </div>
                     <div v-if="categoryConfig" class="config-box__sec">
                         <div class="config-box__sec-item">
-                            <p class="config-box__sec-label">カテゴリの削除</p>
+                            <label class="config-box__sec-label">
+                                カテゴリの削除
+                            </label>
                             <Pulldown
                                 :options="pulldownOptions"
                                 title="カテゴリ"
@@ -104,7 +175,14 @@
 <script lang="ts">
 import Vue from 'vue';
 import { mapState, mapGetters, mapMutations } from 'vuex';
-import { PulldownOption, Category } from '~/types/global';
+import { PulldownOption, Category, Task } from '~/types/global';
+import { formatDate } from '~/assets/ts/utils';
+
+interface DataType {
+    addCategoryLabel: string;
+    deleteCategoryId: number;
+    task: Task;
+}
 
 export default Vue.extend({
     props: {
@@ -133,10 +211,27 @@ export default Vue.extend({
             default: 0,
         },
     },
-    data() {
+    data(): DataType {
         return {
             addCategoryLabel: '',
             deleteCategoryId: 0,
+            task: {
+                id: 0,
+                label: '',
+                description: '',
+                existDescription: false,
+                registerDate: new Date(),
+                existRegisterDate: false,
+                startDate: '',
+                existStartDate: false,
+                expirationDate: '',
+                existExpirationDate: false,
+                category: '',
+                categoryId: 0,
+                existCategory: false,
+                stateId: 0,
+                existController: false,
+            },
         };
     },
     computed: {
@@ -150,6 +245,17 @@ export default Vue.extend({
                 };
             });
         },
+        /**
+         * 登録日の文字列
+         */
+        registerDate(): string {
+            return formatDate(this.task.registerDate, 'yyyy/MM/dd');
+        },
+    },
+    created() {
+        if (this.taskEditConfig) {
+            // @TODO 設定編集機能追加
+        }
     },
     methods: {
         ...mapMutations(['deleteCategory', 'addCategory', 'addToast']),
@@ -222,7 +328,7 @@ export default Vue.extend({
         align-items: center;
         border-top-left-radius: 4px;
         border-top-right-radius: 4px;
-        // background-color: $c-primary;
+        background-color: $c-white;
         padding: $p-sm $p-md;
         border-bottom: 1px solid $c-gray;
 

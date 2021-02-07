@@ -2,7 +2,7 @@
  * Dateオブジェクトを基に、yyyy/MM/dd形式の文字列を生成する
  * @param dateObject Dateオブジェクト
  */
-export const formatDate = (dateObject: Date, format: string = ''): string => {
+export const formatDate = (dateObject: Date, format: string): string => {
     const year = String(dateObject.getFullYear());
     const month = String(dateObject.getMonth() + 1).padStart(2, '0');
     const date = String(dateObject.getDate()).padStart(2, '0');
@@ -14,9 +14,11 @@ export const formatDate = (dateObject: Date, format: string = ''): string => {
     switch (format) {
         case 'yyyy/MM/dd':
             return `${year}/${month}/${date}`;
+        case 'yyyy-MM-dd':
+            return `${year}-${month}-${date}`;
         case 'yyyy/MM/dd HH:mm:ss.SSS':
             return `${year}/${month}/${date} ${hour}:${minutes}:${seconds}.${milliseconds}`;
         default:
-            return `${year}/${month}/${date}`;
+            throw new Error('Does not exist format string');
     }
 };

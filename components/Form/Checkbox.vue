@@ -3,8 +3,8 @@
         <input
             class="checkbox__input"
             type="checkbox"
-            :checked="checked"
-            @input="$emit('input', !checked)"
+            :checked="value"
+            @input="$emit('input', $event.target.checked)"
         />
         <span class="checkbox__label">{{ label }}</span>
     </label>
@@ -19,7 +19,7 @@ export default Vue.extend({
             type: String,
             default: null,
         },
-        checked: {
+        value: {
             type: Boolean,
             default: false,
         },
