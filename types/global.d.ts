@@ -16,13 +16,12 @@ export interface Task {
     label: string;
     description: string;
     existDescription: boolean;
-    registerDate: Date;
+    registerDate: string;
     existRegisterDate: boolean;
-    startDate: Date | '';
+    startDate: string;
     existStartDate: boolean;
-    expirationDate: Date | '';
+    expirationDate: string;
     existExpirationDate: boolean;
-    category: string;
     categoryId: number;
     existCategory: boolean;
     stateId: number;
@@ -52,6 +51,7 @@ export interface ConfigBox {
     categoryConfig: boolean;
     taskAddConfig: boolean;
     taskEditConfig: boolean;
+    stateId: number;
 }
 export interface Toast {
     id: string;

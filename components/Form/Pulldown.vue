@@ -5,7 +5,7 @@
             ref="pulldownContent"
             class="pulldown__content"
             :title="title"
-            @change="$emit('change', $event.target.value)"
+            @input="$emit('input', $event.target.value)"
         >
             <option
                 v-for="option in options"
@@ -39,13 +39,13 @@ export default Vue.extend({
         },
         title: {
             type: String,
-            required: true,
+            default: '',
         },
     },
     updated() {
         const value = (this.$refs.pulldownContent as HTMLSelectElement).value;
 
-        this.$emit('change', value);
+        this.$emit('input', value);
     },
     mounted() {
         if (this.selected === '') {
@@ -53,7 +53,7 @@ export default Vue.extend({
                 const value = (this.$refs.pulldownContent as HTMLSelectElement)
                     .value;
 
-                this.$emit('change', value);
+                this.$emit('input', value);
             });
         }
     },

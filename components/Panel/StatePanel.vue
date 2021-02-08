@@ -4,7 +4,12 @@
             <div class="state-panel__head-detail">
                 <p class="state-panel__label">{{ label }}</p>
                 <ul class="state-panel__btn">
-                    <li><AdditionalBtn @click="openTaskAddConfig" /></li>
+                    <li>
+                        <AdditionalBtn
+                            alt="課題を追加する"
+                            @click="openTaskAddConfig(stateId)"
+                        />
+                    </li>
                 </ul>
             </div>
             <div class="state-panel__order">
@@ -22,7 +27,7 @@
             </div>
         </div>
         <ul class="state-panel__body">
-            <li v-for="task in taskList" :key="task.registerDate">
+            <li v-for="task in sortedTaskList" :key="task.id">
                 <TaskPanel :task-data="task" />
             </li>
         </ul>
@@ -82,9 +87,70 @@ export default Vue.extend({
                 },
             ];
         },
+        sortedTaskList(): Task[] {
+            const cloneTaskList: Task[] = JSON.parse(
+                JSON.stringify(this.taskList)
+            );
+
+            switch (this.sortType) {
+                case 'registerAsc':
+                    return cloneTaskList.sort((a, b) => {
+                        return this.compareDateStr(
+                            a.registerDate,
+                            b.registerDate
+                        );
+                    });
+                case 'registerDesc':
+                    return cloneTaskList.sort((a, b) => {
+                        return this.compareDateStr(
+                            b.registerDate,
+                            a.registerDate
+                        );
+                    });
+                case 'startDateAsc':
+                    return cloneTaskList.sort((a, b) => {
+                        return this.compareDateStr(a.startDate, b.startDate);
+                    });
+                case 'startDateDesc':
+                    return cloneTaskList.sort((a, b) => {
+                        return this.compareDateStr(b.startDate, a.startDate);
+                    });
+                case 'expirationAsc':
+                    return cloneTaskList.sort((a, b) => {
+                        return this.compareDateStr(
+                            a.expirationDate,
+                            b.expirationDate
+                        );
+                    });
+                case 'expirationDesc':
+                    return cloneTaskList.sort((a, b) => {
+                        return this.compareDateStr(
+                            b.expirationDate,
+                            a.expirationDate
+                        );
+                    });
+            }
+
+            throw new Error('this sortType does not exist.');
+        },
     },
     methods: {
         ...mapMutations(['changeStatePanelSortType', 'openTaskAddConfig']),
+        compareDateStr(dateStrA: string, dateStrB: string) {
+            const dateStrAWrap =
+                dateStrA === '' ? new Date('1970-1-1') : new Date(dateStrA);
+            const dateStrBWrap =
+                dateStrB === '' ? new Date('1970-1-1') : new Date(dateStrB);
+
+            if (new Date(dateStrAWrap) > new Date(dateStrBWrap)) {
+                return 1;
+            }
+            if (new Date(dateStrAWrap) < new Date(dateStrBWrap)) {
+                return -1;
+            }
+
+            return 0;
+        },
     },
 });
 </script>

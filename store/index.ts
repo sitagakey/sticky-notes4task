@@ -24,6 +24,7 @@ export const state = (): State => ({
         categoryConfig: false,
         taskAddConfig: false,
         taskEditConfig: false,
+        stateId: 0,
     },
     statePanelList: [
         {
@@ -74,13 +75,12 @@ export const state = (): State => ({
             label: '英語',
             description: '毎日3ページ教科書をやる',
             existDescription: true,
-            registerDate: new Date(),
+            registerDate: formatDate(new Date(), 'yyyy-MM-dd'),
             existRegisterDate: true,
-            startDate: new Date(),
+            startDate: '',
             existStartDate: true,
-            expirationDate: new Date(),
+            expirationDate: '',
             existExpirationDate: true,
-            category: '英語',
             categoryId: 2,
             existCategory: true,
             stateId: 1,
@@ -148,6 +148,24 @@ export const getters = {
             return !CATEGORY_WHITE_LIST.includes(category.id);
         });
     },
+    taskUniqueId(state: State): number {
+        const idList = state.taskList.map((task) => task.id);
+        const id = Math.max(...idList) + 1;
+
+        return id;
+    },
+    categoryLabelList(state: State) {
+        interface Result {
+            [key: string]: string;
+        }
+        const result: Result = {};
+
+        for (const category of state.categoryList) {
+            result[`id${String(category.id)}`] = category.label;
+        }
+
+        return result;
+    },
 };
 export const mutations = {
     changeStatePanelState(
@@ -160,7 +178,10 @@ export const mutations = {
             isActive: boolean;
         }
     ) {
-        const targetStatePanel = state.statePanelList[id - 1];
+        const idx = state.statePanelList.findIndex(
+            (statePanel) => statePanel.id === id
+        );
+        const targetStatePanel = state.statePanelList[idx];
 
         targetStatePanel.isActive = isActive;
     },
@@ -174,7 +195,10 @@ export const mutations = {
             sortType: SortType;
         }
     ) {
-        const targetStatePanel = state.statePanelList[id - 1];
+        const idx = state.statePanelList.findIndex(
+            (statePanel) => statePanel.id === id
+        );
+        const targetStatePanel = state.statePanelList[idx];
 
         targetStatePanel.sortType = sortType;
     },
@@ -222,12 +246,13 @@ export const mutations = {
         state.configBox.taskAddConfig = false;
         state.configBox.taskEditConfig = false;
     },
-    openTaskAddConfig(state: State) {
+    openTaskAddConfig(state: State, stateId: number) {
         state.configBox.isOpen = true;
         state.configBox.label = '課題を追加する';
         state.configBox.categoryConfig = false;
         state.configBox.taskAddConfig = true;
         state.configBox.taskEditConfig = false;
+        state.configBox.stateId = stateId;
     },
     closeConfigBox(state: State) {
         state.configBox.isOpen = false;
@@ -235,6 +260,7 @@ export const mutations = {
         state.configBox.categoryConfig = false;
         state.configBox.taskAddConfig = false;
         state.configBox.taskEditConfig = false;
+        state.configBox.stateId = 0;
     },
     addToast(state: State, label: string) {
         state.toastList.unshift({
@@ -246,5 +272,8 @@ export const mutations = {
         const idx = state.toastList.findIndex((toast) => toast.id === id);
 
         state.toastList.splice(idx, 1);
+    },
+    addTask(state: State, task: Task) {
+        state.taskList.push(task);
     },
 };

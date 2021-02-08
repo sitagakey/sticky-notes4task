@@ -98,7 +98,9 @@
                             </label>
                             <Pulldown
                                 id="config-box__category"
-                                :selected="task.categoryId"
+                                :selected="String(task.categoryId)"
+                                :options="taskEditConfigPulldownOptions"
+                                @change="setTaskCategory"
                             />
                             <Checkbox
                                 v-model="task.existCategory"
@@ -117,7 +119,11 @@
                     </div>
                     <div v-if="taskAddConfig" class="config-box__sec">
                         <div class="config-box__sec-item is-center">
-                            <PrimaryBtn label="課題を追加する" />
+                            <PrimaryBtn
+                                :disabled="task.label === ''"
+                                label="課題を追加する"
+                                @click="addTaskProcessing"
+                            />
                         </div>
                     </div>
                     <div v-if="taskEditConfig" class="config-box__sec">
@@ -155,13 +161,15 @@
                                 カテゴリの削除
                             </label>
                             <Pulldown
-                                :options="pulldownOptions"
+                                :options="categoryConfigPulldownOptions"
                                 title="カテゴリ"
                                 @change="chnageDeleteCategoryId"
                             />
                             <DengerBtn
                                 label="このカテゴリを削除する"
-                                :disabled="pulldownOptions.length === 0"
+                                :disabled="
+                                    categoryConfigPulldownOptions.length === 0
+                                "
                                 @click="deleteCategoryProcessing"
                             />
                         </div>
@@ -220,13 +228,12 @@ export default Vue.extend({
                 label: '',
                 description: '',
                 existDescription: false,
-                registerDate: new Date(),
+                registerDate: formatDate(new Date(), 'yyyy-MM-dd'),
                 existRegisterDate: false,
                 startDate: '',
                 existStartDate: false,
                 expirationDate: '',
                 existExpirationDate: false,
-                category: '',
                 categoryId: 0,
                 existCategory: false,
                 stateId: 0,
@@ -236,20 +243,25 @@ export default Vue.extend({
     },
     computed: {
         ...mapState(['configBox', 'categoryList']),
-        ...mapGetters(['deletableCategoryList']),
-        pulldownOptions(): PulldownOption[] {
-            return this.deletableCategoryList.map((category: Category) => {
+        ...mapGetters(['deletableCategoryList', 'taskUniqueId']),
+        registerDate(): string {
+            return this.task.registerDate.replace(/-/g, '/');
+        },
+        taskEditConfigPulldownOptions(): PulldownOption[] {
+            return this.categoryList.map((category: Category) => {
                 return {
                     label: category.label,
                     value: String(category.id),
                 };
             });
         },
-        /**
-         * 登録日の文字列
-         */
-        registerDate(): string {
-            return formatDate(this.task.registerDate, 'yyyy/MM/dd');
+        categoryConfigPulldownOptions(): PulldownOption[] {
+            return this.deletableCategoryList.map((category: Category) => {
+                return {
+                    label: category.label,
+                    value: String(category.id),
+                };
+            });
         },
     },
     created() {
@@ -258,7 +270,13 @@ export default Vue.extend({
         }
     },
     methods: {
-        ...mapMutations(['deleteCategory', 'addCategory', 'addToast']),
+        ...mapMutations([
+            'deleteCategory',
+            'addCategory',
+            'addToast',
+            'addTask',
+            'closeConfigBox',
+        ]),
         chnageDeleteCategoryId(id: string) {
             this.deleteCategoryId = Number(id);
         },
@@ -291,6 +309,39 @@ export default Vue.extend({
                 this.deleteCategory(this.deleteCategoryId);
                 this.addToast(`「${targetLabel}」カテゴリを削除しました`);
             }
+        },
+        setTaskCategory(id: string) {
+            this.task.categoryId = Number(id);
+        },
+        addTaskProcessing() {
+            if (this.task.label !== '') {
+                this.task.id = this.taskUniqueId;
+                this.task.stateId = this.configBox.stateId;
+                this.addTask({ ...this.task });
+                this.addToast(`課題「${this.task.label}」を追加しました`);
+                this.closeConfigBox();
+                this.initData();
+            }
+        },
+        initData() {
+            this.addCategoryLabel = '';
+            this.deleteCategoryId = 0;
+            this.task = {
+                id: 0,
+                label: '',
+                description: '',
+                existDescription: false,
+                registerDate: formatDate(new Date(), 'yyyy-MM-dd'),
+                existRegisterDate: false,
+                startDate: '',
+                existStartDate: false,
+                expirationDate: '',
+                existExpirationDate: false,
+                categoryId: 0,
+                existCategory: false,
+                stateId: 0,
+                existController: false,
+            };
         },
     },
 });

@@ -2,32 +2,20 @@
     <input
         class="datepicker"
         type="date"
-        :value="inputDateValue"
+        :value="value"
         @input="$emit('input', $event.target.value)"
     />
 </template>
 
 <script lang="ts">
 import Vue, { PropOptions } from 'vue';
-import { formatDate } from '~/assets/ts/utils.ts';
-
-type InputDateValue = Date | '';
 
 export default Vue.extend({
     props: {
         value: {
             type: [Date, String],
             required: true,
-        } as PropOptions<InputDateValue>,
-    },
-    computed: {
-        inputDateValue(): string {
-            if (typeof this.value === 'string') {
-                return '';
-            }
-
-            return formatDate(this.value, 'yyyy-MM-dd');
-        },
+        } as PropOptions<string>,
     },
 });
 </script>

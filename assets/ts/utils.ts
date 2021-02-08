@@ -1,5 +1,5 @@
 /**
- * Dateオブジェクトを基に、yyyy/MM/dd形式の文字列を生成する
+ * Dateオブジェクトを基に、指定された形式の文字列を生成する
  * @param dateObject Dateオブジェクト
  */
 export const formatDate = (dateObject: Date, format: string): string => {

@@ -4,8 +4,14 @@
             <div class="task-panel__head-group">
                 <p class="task-panel__label">{{ taskData.label }}</p>
                 <ul class="task-panel__btn">
-                    <li><ArrowBtn /></li>
-                    <li><MenuBtn /></li>
+                    <li>
+                        <ArrowBtn
+                            :alt="`${taskData.label}の状態をドラッグ&ドロップで変更する`"
+                        />
+                    </li>
+                    <li>
+                        <MenuBtn :alt="`${taskData.label}の内容を編集する`" />
+                    </li>
                 </ul>
             </div>
             <p v-if="taskData.existDescription" class="task-panel__desc">
@@ -25,7 +31,7 @@
                         </dd>
                     </div>
                     <div
-                        v-if="taskData.existStartDate"
+                        v-if="startDate !== '' && taskData.existStartDate"
                         class="task-panel__detail-item"
                     >
                         <dt class="task-panel__detail-label">開始日</dt>
@@ -34,11 +40,17 @@
                         </dd>
                     </div>
                     <div
-                        v-if="taskData.existExpirationDate"
+                        v-if="
+                            expirationDate !== '' &&
+                            taskData.existExpirationDate
+                        "
                         class="task-panel__detail-item"
                     >
                         <dt class="task-panel__detail-label">期限日</dt>
-                        <dd class="task-panel__detail-desc">
+                        <dd
+                            :class="{ 'is-dead-line': isDeadLine }"
+                            class="task-panel__detail-desc"
+                        >
                             {{ expirationDate }}
                         </dd>
                     </div>
@@ -48,7 +60,7 @@
                     >
                         <dt class="task-panel__detail-label">カテゴリー</dt>
                         <dd class="task-panel__detail-desc">
-                            {{ taskData.category }}
+                            {{ categoryLabelList[`id${taskData.categoryId}`] }}
                         </dd>
                     </div>
                 </dl>
@@ -71,7 +83,7 @@
 
 <script lang="ts">
 import Vue, { PropOptions } from 'vue';
-import { formatDate } from '~/assets/ts/utils';
+import { mapGetters } from 'vuex';
 import { Task } from '~/types/global';
 
 export default Vue.extend({
@@ -82,6 +94,7 @@ export default Vue.extend({
         } as PropOptions<Task>,
     },
     computed: {
+        ...mapGetters(['categoryLabelList']),
         existBody() {
             const {
                 existRegisterDate,
@@ -102,14 +115,20 @@ export default Vue.extend({
 
             return existCategory;
         },
-        registerDate() {
-            return formatDate(this.taskData.registerDate, 'yyyy/MM/dd');
+        registerDate(): string {
+            return this.taskData.registerDate.replace(/-/g, '/');
         },
-        startDate() {
-            return formatDate(this.taskData.startDate, 'yyyy/MM/dd');
+        startDate(): string {
+            return this.taskData.startDate.replace(/-/g, '/');
         },
-        expirationDate() {
-            return formatDate(this.taskData.expirationDate, 'yyyy/MM/dd');
+        expirationDate(): string {
+            return this.taskData.expirationDate.replace(/-/g, '/');
+        },
+        isDeadLine(): boolean {
+            const expiration = new Date(this.taskData.expirationDate);
+            const today = new Date();
+
+            return today >= expiration;
         },
     },
 });
@@ -184,6 +203,11 @@ export default Vue.extend({
     }
     &__detail-desc {
         margin-top: $m-2xs;
+
+        &.is-dead-line {
+            color: $c-pink;
+            font-weight: bold;
+        }
     }
     &__foot {
         padding: 0 $p-sm;
