@@ -26,11 +26,15 @@
                 />
             </div>
         </div>
-        <ul class="state-panel__body">
+        <transition-group
+            tag="ul"
+            class="state-panel__body"
+            name="state-panel__body"
+        >
             <li v-for="task in sortedTaskList" :key="task.id">
                 <TaskPanel :task-data="task" />
             </li>
-        </ul>
+        </transition-group>
     </div>
 </template>
 
@@ -163,7 +167,7 @@ export default Vue.extend({
 
     &__head {
         padding: $p-sm $p-sm $p-lg $p-sm;
-        border-bottom: 4px dashed $c-gray-light;
+        border-bottom: 4px solid $c-gray-light;
     }
     &__label {
         font-size: 2rem;
@@ -189,6 +193,14 @@ export default Vue.extend({
 
         > *:not(:first-child) {
             margin-top: $m-md;
+        }
+        &-enter-active,
+        &-leave-active {
+            transition: 0.3s;
+        }
+        &-enter,
+        &-leave-to {
+            opacity: 0;
         }
     }
 }

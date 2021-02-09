@@ -33,14 +33,17 @@
             </transition-group>
         </div>
 
-        <ConfigBox
-            :is-open="configBox.isOpen"
-            :label="configBox.label"
-            :category-config="configBox.categoryConfig"
-            :task-add-config="configBox.taskAddConfig"
-            :task-edit-config="configBox.taskEditConfig"
-            @close="closeConfigBox"
-        />
+        <transition name="config-box">
+            <ConfigBox
+                v-if="configBox.isOpen"
+                :label="configBox.label"
+                :category-config="configBox.categoryConfig"
+                :task-add-config="configBox.taskAddConfig"
+                :task-edit-config="configBox.taskEditConfig"
+                :related-id="configBox.relatedId"
+                @close="closeConfigBox"
+            />
+        </transition>
 
         <ToastList :list-item-arr="toastList" @close="deleteToast" />
     </main>
@@ -116,6 +119,16 @@ export default Vue.extend({
         &-leave-to {
             opacity: 0;
             transform: translateY(60px);
+        }
+    }
+    .config-box {
+        &-enter-active,
+        &-leave-active {
+            transition: 0.1s;
+        }
+        &-enter,
+        &-leave-to {
+            opacity: 0;
         }
     }
 }

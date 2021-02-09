@@ -1,5 +1,5 @@
 import { STATE_ID, CATEGORY_WHITE_LIST } from '~/assets/ts/variables';
-import { formatDate } from '~/assets/ts/utils';
+import { formatDate, windowLock, windowUnLock } from '~/assets/ts/utils';
 import {
     StatePanel,
     Task,
@@ -10,6 +10,7 @@ import {
 } from '~/types/global';
 
 type State = {
+    windowLockPoint: number;
     toastList: Toast[];
     configBox: ConfigBox;
     statePanelList: StatePanel[];
@@ -17,6 +18,7 @@ type State = {
     taskList: Task[];
 };
 export const state = (): State => ({
+    windowLockPoint: 0,
     toastList: [],
     configBox: {
         isOpen: false,
@@ -24,7 +26,7 @@ export const state = (): State => ({
         categoryConfig: false,
         taskAddConfig: false,
         taskEditConfig: false,
-        stateId: 0,
+        relatedId: 0,
     },
     statePanelList: [
         {
@@ -97,14 +99,18 @@ export const getters = {
         return state.statePanelList.filter((statePanel) => statePanel.isActive);
     },
     /**
-     * 課題を状態別でフィルタリングしたオブジェクトを返す
+     * アクティブなカテゴリの課題を状態別でフィルタリングしたオブジェクトを返す
      * @param state stateオブジェクト
      */
     filteringTaskList(state: State) {
         const result = [[] as Task[], [] as Task[], [] as Task[], [] as Task[]];
 
         state.taskList.forEach((task: Task) => {
-            result[task.stateId - 1].push(task);
+            for (const category of state.categoryList) {
+                if (category.id === task.categoryId && category.isActive) {
+                    result[task.stateId - 1].push(task);
+                }
+            }
         });
 
         return result;
@@ -150,7 +156,13 @@ export const getters = {
     },
     taskUniqueId(state: State): number {
         const idList = state.taskList.map((task) => task.id);
-        const id = Math.max(...idList) + 1;
+        const id = (() => {
+            if (idList.length > 0) {
+                return Math.max(...idList) + 1;
+            } else {
+                return 1;
+            }
+        })();
 
         return id;
     },
@@ -243,16 +255,36 @@ export const mutations = {
         state.configBox.isOpen = true;
         state.configBox.label = 'カテゴリの設定';
         state.configBox.categoryConfig = true;
-        state.configBox.taskAddConfig = false;
-        state.configBox.taskEditConfig = false;
+        state.windowLockPoint = window.pageYOffset;
+
+        windowLock();
     },
     openTaskAddConfig(state: State, stateId: number) {
         state.configBox.isOpen = true;
         state.configBox.label = '課題を追加する';
-        state.configBox.categoryConfig = false;
         state.configBox.taskAddConfig = true;
-        state.configBox.taskEditConfig = false;
-        state.configBox.stateId = stateId;
+        state.configBox.relatedId = stateId;
+        state.windowLockPoint = window.pageYOffset;
+
+        windowLock();
+    },
+    openTaskEditConfig(
+        state: State,
+        {
+            taskId,
+            taskLabel,
+        }: {
+            taskId: number;
+            taskLabel: string;
+        }
+    ) {
+        state.configBox.isOpen = true;
+        state.configBox.label = `「${taskLabel}」を編集`;
+        state.configBox.taskEditConfig = true;
+        state.configBox.relatedId = taskId;
+        state.windowLockPoint = window.pageYOffset;
+
+        windowLock();
     },
     closeConfigBox(state: State) {
         state.configBox.isOpen = false;
@@ -260,7 +292,9 @@ export const mutations = {
         state.configBox.categoryConfig = false;
         state.configBox.taskAddConfig = false;
         state.configBox.taskEditConfig = false;
-        state.configBox.stateId = 0;
+        state.configBox.relatedId = 0;
+
+        windowUnLock(state.windowLockPoint);
     },
     addToast(state: State, label: string) {
         state.toastList.unshift({
@@ -275,5 +309,32 @@ export const mutations = {
     },
     addTask(state: State, task: Task) {
         state.taskList.push(task);
+    },
+    setTask(state: State, task: Task) {
+        const idx = state.taskList.findIndex((baseTask) => {
+            return baseTask.id === task.id;
+        });
+
+        state.taskList[idx].id = task.id;
+        state.taskList[idx].label = task.label;
+        state.taskList[idx].description = task.description;
+        state.taskList[idx].existDescription = task.existDescription;
+        state.taskList[idx].registerDate = task.registerDate;
+        state.taskList[idx].existRegisterDate = task.existRegisterDate;
+        state.taskList[idx].startDate = task.startDate;
+        state.taskList[idx].existStartDate = task.existStartDate;
+        state.taskList[idx].expirationDate = task.expirationDate;
+        state.taskList[idx].existExpirationDate = task.existExpirationDate;
+        state.taskList[idx].categoryId = task.categoryId;
+        state.taskList[idx].existCategory = task.existCategory;
+        state.taskList[idx].stateId = task.stateId;
+        state.taskList[idx].existController = task.existController;
+    },
+    deleteTask(state: State, id: number) {
+        const idx = state.taskList.findIndex((task) => {
+            return task.id === id;
+        });
+
+        state.taskList.splice(idx, 1);
     },
 };

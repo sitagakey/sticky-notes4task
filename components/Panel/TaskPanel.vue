@@ -10,7 +10,15 @@
                         />
                     </li>
                     <li>
-                        <MenuBtn :alt="`${taskData.label}の内容を編集する`" />
+                        <MenuBtn
+                            :alt="`${taskData.label}の内容を編集する`"
+                            @click="
+                                openTaskEditConfig({
+                                    taskId: taskData.id,
+                                    taskLabel: taskData.label,
+                                })
+                            "
+                        />
                     </li>
                 </ul>
             </div>
@@ -83,7 +91,7 @@
 
 <script lang="ts">
 import Vue, { PropOptions } from 'vue';
-import { mapGetters } from 'vuex';
+import { mapGetters, mapMutations } from 'vuex';
 import { Task } from '~/types/global';
 
 export default Vue.extend({
@@ -130,6 +138,9 @@ export default Vue.extend({
 
             return today >= expiration;
         },
+    },
+    methods: {
+        ...mapMutations(['openTaskEditConfig']),
     },
 });
 </script>
