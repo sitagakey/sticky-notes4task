@@ -42,6 +42,7 @@ export class LockAt {
     focusableElements: NodeListOf<HTMLElement>; // eslint-disable-line
     firstElement: HTMLElement;
     lastElement: HTMLElement;
+    private loopEvent: (e: KeyboardEvent) => void = this.loop.bind(this);
 
     constructor(wrapperElement: HTMLElement) {
         this.wrapperElement = wrapperElement;
@@ -52,9 +53,13 @@ export class LockAt {
         this.lastElement = this.focusableElements[
             this.focusableElements.length - 1
         ];
+
+        this.addEvents();
     }
 
     resetFocusableElements() {
+        this.removeEvents();
+
         this.focusableElements = this.wrapperElement.querySelectorAll(
             FOCUSABLE_ELEMENTS
         );
@@ -62,31 +67,34 @@ export class LockAt {
         this.lastElement = this.focusableElements[
             this.focusableElements.length - 1
         ];
+
+        this.addEvents();
     }
 
-    setEvent() {
-        // @TODO フォーカス https://magazine.techcareer.jp/instacart-blog/technology-instacart-blog/6418/
+    addEvents() {
+        this.firstElement.addEventListener('keydown', this.loopEvent);
+        this.lastElement.addEventListener('keydown', this.loopEvent);
     }
 
-    unsetEvent() {
-        // @TODO
+    removeEvents() {
+        this.firstElement.removeEventListener('keydown', this.loopEvent);
+        this.lastElement.removeEventListener('keydown', this.loopEvent);
     }
 
-    keydown() {
-        // @TODO
+    loop(e: KeyboardEvent) {
+        const key = e.key;
+        const onTab = key === 'Tab';
+        const onShift = e.shiftKey;
+        const target = e.target;
+        const isFirstElement = target === this.firstElement;
+        const isLastElement = target === this.lastElement;
+
+        if (onTab && onShift && isFirstElement) {
+            e.preventDefault();
+            this.lastElement.focus();
+        } else if (onTab && !onShift && isLastElement) {
+            e.preventDefault();
+            this.firstElement.focus();
+        }
     }
 }
-
-// (wrapperElement: HTMLElement) => {
-//     const focusableElements = wrapperElement.querySelectorAll(
-//         'button:not([disabled]), [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
-//     );
-//     const first = focusableElements[0];
-//     const end = focusableElements[focusableElements.length - 1];
-
-//     end.addEventListener('focus')
-
-//     if (end) {
-
-//     }
-// };

@@ -1,5 +1,5 @@
 <template>
-    <div class="config-box">
+    <div class="config-box" tabindex="-1" @keydown.escape="$emit('close')">
         <div class="config-box__inr">
             <div class="config-box__head">
                 <p class="config-box__label">{{ label }}</p>
@@ -20,6 +20,7 @@
                         <TextInput
                             id="config-box__task-label"
                             v-model="task.label"
+                            @change="resetFocusableElements"
                         />
                     </div>
                     <div class="config-box__sec-item">
@@ -185,12 +186,13 @@
 import Vue from 'vue';
 import { mapState, mapGetters, mapMutations } from 'vuex';
 import { PulldownOption, Category, Task } from '~/types/global';
-import { formatDate } from '~/assets/ts/utils';
+import { formatDate, LockAt } from '~/assets/ts/utils';
 
 interface DataType {
     addCategoryLabel: string;
     deleteCategoryId: number;
     task: Task;
+    lockAt: LockAt | null;
 }
 
 export default Vue.extend({
@@ -236,6 +238,7 @@ export default Vue.extend({
                 stateId: 0,
                 existController: false,
             },
+            lockAt: null,
         };
     },
     computed: {
@@ -261,12 +264,29 @@ export default Vue.extend({
             });
         },
     },
+    watch: {
+        categoryConfigPulldownOptions() {
+            this.$nextTick(() => {
+                this.lockAt?.resetFocusableElements();
+
+                if (this.categoryConfigPulldownOptions.length === 0) {
+                    this.lockAt?.lastElement.focus();
+                }
+            });
+        },
+    },
     created() {
         // 課題の編集をする場合は課題情報をthis.taskに注入する
         if (this.taskEditConfig) {
             const targetTask = this.getRelatedTask();
             this.task = { ...targetTask };
         }
+    },
+    mounted() {
+        this.$nextTick(() => {
+            (this.$el as HTMLElement).focus();
+            this.lockAt = new LockAt(this.$el as HTMLElement);
+        });
     },
     methods: {
         ...mapMutations([
@@ -364,6 +384,9 @@ export default Vue.extend({
             return this.taskList.find((task: Task) => {
                 return task.id === this.relatedId;
             });
+        },
+        resetFocusableElements() {
+            this.lockAt?.resetFocusableElements();
         },
     },
 });
