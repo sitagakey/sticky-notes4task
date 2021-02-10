@@ -10,6 +10,8 @@ import {
 } from '~/types/global';
 
 type State = {
+    dragoverTaskFlag: boolean;
+    draggingTaskId: number;
     windowLockPoint: number;
     toastList: Toast[];
     configBox: ConfigBox;
@@ -18,6 +20,8 @@ type State = {
     taskList: Task[];
 };
 export const state = (): State => ({
+    dragoverTaskFlag: false,
+    draggingTaskId: 0,
     windowLockPoint: 0,
     toastList: [],
     configBox: {
@@ -77,7 +81,7 @@ export const state = (): State => ({
             label: '英語',
             description: '毎日3ページ教科書をやる',
             existDescription: true,
-            registerDate: formatDate(new Date(), 'yyyy-MM-dd'),
+            registerDate: '2021-01-01',
             existRegisterDate: true,
             startDate: '',
             existStartDate: true,
@@ -91,6 +95,11 @@ export const state = (): State => ({
     ],
 });
 export const getters = {
+    isTouchscreen() {
+        const canHover = matchMedia('(any-hover: hover)');
+
+        return !canHover.matches;
+    },
     /**
      * 活性状態の状態パネルのみを返す
      * @param state stateオブジェクト
@@ -177,6 +186,13 @@ export const getters = {
         }
 
         return result;
+    },
+    getTaskOfShallowCopy: (state: State) => (id: number) => {
+        const task = state.taskList.find((task) => {
+            return id === task.id;
+        });
+
+        return { ...task };
     },
 };
 export const mutations = {
@@ -336,5 +352,25 @@ export const mutations = {
         });
 
         state.taskList.splice(idx, 1);
+    },
+    moveTaskToPrevStep(state: State, id: number) {
+        const idx = state.taskList.findIndex((task) => {
+            return task.id === id;
+        });
+
+        state.taskList[idx].stateId--;
+    },
+    moveTaskToNextStep(state: State, id: number) {
+        const idx = state.taskList.findIndex((task) => {
+            return task.id === id;
+        });
+
+        state.taskList[idx].stateId++;
+    },
+    setDraggingTaskId(state: State, id: number) {
+        state.draggingTaskId = id;
+    },
+    setDragoverTaskFlag(state: State, boolean: boolean) {
+        state.dragoverTaskFlag = boolean;
     },
 };

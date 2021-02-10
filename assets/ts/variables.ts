@@ -7,4 +7,4 @@ export const STATE_ID = {
 };
 export const CATEGORY_WHITE_LIST = [1];
 export const FOCUSABLE_ELEMENTS =
-    'button:not([disabled]), [href], input, select, textarea, [tabindex]:not([tabindex="-1"])';
+    'button:not([disabled]), [href], input:not([disabled]), select, textarea, [tabindex]:not([tabindex="-1"])';

@@ -7,10 +7,7 @@
 </template>
 
 <script lang="ts">
-// @TODO: データベースのデータを取得
 // import Vue from 'vue';
-// import { mapState } from 'vuex';
-
-// export default Vue.extend({
-// });
+// @TODO: データベースのデータを取得
+// export default Vue.extend({});
 </script>

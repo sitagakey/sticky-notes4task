@@ -28,7 +28,7 @@ export default Vue.extend({
     padding: $p-xs;
     border: 1px solid $c-gray;
     border-radius: 4px;
-    max-height: 35px;
+    height: 35px;
     font-size: 1.6rem;
     background-color: $c-white;
 

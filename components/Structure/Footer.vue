@@ -3,10 +3,7 @@
         <div class="footer__inr">
             <p class="footer__label">カダイの付箋とは？</p>
             <div class="footer__text-group">
-                <p>
-                    課題を簡単に管理できるWebアプリケーションです。<br />
-                    だれでも無料でお使いいただけます😃<br />
-                </p>
+                <p>だれでも無料で使える課題管理アプリです😃</p>
             </div>
             <p class="footer__label">諸注意</p>
             <div class="footer__text-group">
@@ -28,6 +25,10 @@
                     </a>
                 </li>
             </ul>
+            <p class="footer__label">バージョン</p>
+            <div class="footer__text-group">
+                <p>{{ $version }}（ベータ版）</p>
+            </div>
             <p class="footer__copy"><small>©️ 2021 ひきこもり</small></p>
         </div>
     </footer>

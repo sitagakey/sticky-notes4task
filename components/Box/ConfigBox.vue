@@ -111,6 +111,7 @@
                         <Checkbox
                             v-model="task.existController"
                             label="コントローラーを表示する"
+                            :disabled="isTouchscreen"
                         />
                     </div>
                 </div>
@@ -233,7 +234,7 @@ export default Vue.extend({
                 existStartDate: false,
                 expirationDate: '',
                 existExpirationDate: false,
-                categoryId: 0,
+                categoryId: 1, // 未分類
                 existCategory: false,
                 stateId: 0,
                 existController: false,
@@ -243,7 +244,11 @@ export default Vue.extend({
     },
     computed: {
         ...mapState(['configBox', 'categoryList', 'taskList']),
-        ...mapGetters(['deletableCategoryList', 'taskUniqueId']),
+        ...mapGetters([
+            'deletableCategoryList',
+            'taskUniqueId',
+            'isTouchscreen',
+        ]),
         registerDate(): string {
             return this.task.registerDate.replace(/-/g, '/');
         },
@@ -280,6 +285,9 @@ export default Vue.extend({
         if (this.taskEditConfig) {
             const targetTask = this.getRelatedTask();
             this.task = { ...targetTask };
+        }
+        if (this.isTouchscreen) {
+            this.task.existController = true;
         }
     },
     mounted() {
@@ -348,7 +356,7 @@ export default Vue.extend({
             const confirmMessage = `課題「${this.task.label}」を本当に削除しますか？`;
 
             if (confirm(confirmMessage)) {
-                this.addToast(`「${this.task.label}」カテゴリを削除しました`);
+                this.addToast(`課題「${this.task.label}」を削除しました`);
                 this.deleteTask(this.task.id);
                 this.closeConfigBox();
                 this.initData();

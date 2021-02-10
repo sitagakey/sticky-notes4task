@@ -4,6 +4,7 @@
             class="checkbox__input"
             type="checkbox"
             :checked="value"
+            :disabled="disabled"
             @input="$emit('input', $event.target.checked)"
         />
         <span class="checkbox__label">{{ label }}</span>
@@ -20,6 +21,10 @@ export default Vue.extend({
             default: null,
         },
         value: {
+            type: Boolean,
+            default: false,
+        },
+        disabled: {
             type: Boolean,
             default: false,
         },
@@ -55,6 +60,12 @@ export default Vue.extend({
             border-right: 2px solid $c-secondary;
             border-bottom: 2px solid $c-secondary;
             transform: rotate(45deg);
+        }
+        &[disabled] {
+            &:checked + .checkbox__label::after {
+                border-right: 2px solid $c-gray;
+                border-bottom: 2px solid $c-gray;
+            }
         }
     }
     &__label {

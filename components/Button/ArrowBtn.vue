@@ -1,5 +1,10 @@
 <template>
-    <button :class="stateClass" class="arrow-btn">
+    <button
+        :class="stateClass"
+        class="arrow-btn"
+        :disabled="disabled"
+        @click="$emit('click')"
+    >
         <span class="arrow-btn__alt">{{ alt }}</span>
     </button>
 </template>
@@ -19,6 +24,10 @@ export default Vue.extend({
             type: String,
             default: '',
         } as PropOptions<State>,
+        disabled: {
+            type: Boolean,
+            default: false,
+        },
     },
     computed: {
         stateClass() {
@@ -52,12 +61,12 @@ export default Vue.extend({
         transform: rotate(45deg);
         background-image: linear-gradient(
             45deg,
-            #000 0%,
-            #000 30%,
+            $c-black-dark 0%,
+            $c-black-dark 30%,
             transparent 30%,
             transparent 70%,
-            #000 70%,
-            #000 100%
+            $c-black-dark 70%,
+            $c-black-dark 100%
         );
         top: calc(50% - 20%);
         left: calc(50% - 20%);
@@ -67,13 +76,24 @@ export default Vue.extend({
         &::before {
             background-image: linear-gradient(
                 45deg,
-                #000 0%,
-                #000 40%,
+                $c-black-dark 0%,
+                $c-black-dark 40%,
                 transparent 40%,
                 transparent 100%
             );
             top: calc(50% - 20%);
             left: calc(50% - 8%);
+        }
+        &[disabled] {
+            &::before {
+                background-image: linear-gradient(
+                    45deg,
+                    $c-gray-dark 0%,
+                    $c-gray-dark 40%,
+                    transparent 40%,
+                    transparent 100%
+                );
+            }
         }
     }
     &.is-right {
@@ -82,19 +102,30 @@ export default Vue.extend({
                 45deg,
                 transparent 0%,
                 transparent 60%,
-                #000 60%,
-                #000 100%
+                $c-black-dark 60%,
+                $c-black-dark 100%
             );
             top: calc(50% - 20%);
             left: calc(50% - 28%);
+        }
+        &[disabled] {
+            &::before {
+                background-image: linear-gradient(
+                    45deg,
+                    transparent 0%,
+                    transparent 60%,
+                    $c-gray-dark 60%,
+                    $c-gray-dark 100%
+                );
+            }
         }
     }
     &.is-top {
         &::before {
             background-image: linear-gradient(
                 135deg,
-                #000 0%,
-                #000 40%,
+                $c-black-dark 0%,
+                $c-black-dark 40%,
                 transparent 40%,
                 transparent 100%
             );
@@ -108,8 +139,8 @@ export default Vue.extend({
                 135deg,
                 transparent 0%,
                 transparent 60%,
-                #000 60%,
-                #000 100%
+                $c-black-dark 60%,
+                $c-black-dark 100%
             );
             top: calc(50% - 32%);
             left: calc(50% - 20%);

@@ -26,21 +26,31 @@
                 />
             </div>
         </div>
-        <transition-group
-            tag="ul"
+        <div
+            :class="{ 'is-drag-enter': isDragEnter }"
             class="state-panel__body"
-            name="state-panel__body"
+            @dragenter.prevent="dragenterProcessing"
+            @dragleave="dragleaveProcessing"
+            @dragover.prevent
+            @drop="dropProcessing"
         >
-            <li v-for="task in sortedTaskList" :key="task.id">
-                <TaskPanel :task-data="task" />
-            </li>
-        </transition-group>
+            <transition-group
+                v-if="sortedTaskList.length > 0"
+                tag="ul"
+                class="state-panel__body-inr"
+                name="state-panel__body-inr"
+            >
+                <li v-for="task in sortedTaskList" :key="task.id">
+                    <TaskPanel :task-data="task" />
+                </li>
+            </transition-group>
+        </div>
     </div>
 </template>
 
 <script lang="ts">
 import Vue, { PropOptions } from 'vue';
-import { mapMutations } from 'vuex';
+import { mapState, mapMutations, mapGetters } from 'vuex';
 import { Task, PulldownOption } from '~/types/global';
 
 export default Vue.extend({
@@ -62,7 +72,14 @@ export default Vue.extend({
             required: true,
         } as PropOptions<Task[]>,
     },
+    data() {
+        return {
+            isDragEnter: false,
+        };
+    },
     computed: {
+        ...mapState(['dragoverTaskFlag', 'draggingTaskId']),
+        ...mapGetters(['getTaskOfShallowCopy']),
         pulldownOptions(): PulldownOption[] {
             return [
                 {
@@ -139,7 +156,13 @@ export default Vue.extend({
         },
     },
     methods: {
-        ...mapMutations(['changeStatePanelSortType', 'openTaskAddConfig']),
+        ...mapMutations([
+            'changeStatePanelSortType',
+            'openTaskAddConfig',
+            'setDragoverTaskFlag',
+            'setDraggingTaskId',
+            'setTask',
+        ]),
         compareDateStr(dateStrA: string, dateStrB: string) {
             const dateStrAWrap =
                 dateStrA === '' ? new Date('1970-1-1') : new Date(dateStrA);
@@ -155,6 +178,22 @@ export default Vue.extend({
 
             return 0;
         },
+        dragenterProcessing() {
+            this.isDragEnter = true;
+            this.setDragoverTaskFlag(true);
+        },
+        dragleaveProcessing() {
+            this.isDragEnter = false;
+            this.setDragoverTaskFlag(false);
+        },
+        dropProcessing() {
+            const task = this.getTaskOfShallowCopy(this.draggingTaskId);
+            task.stateId = this.stateId;
+            this.isDragEnter = false;
+            this.setTask(task);
+            this.setDragoverTaskFlag(false);
+            this.setDraggingTaskId(0);
+        },
     },
 });
 </script>
@@ -166,7 +205,7 @@ export default Vue.extend({
     background: $c-white;
 
     &__head {
-        padding: $p-sm $p-sm $p-lg $p-sm;
+        padding: $p-lg $p-sm;
         border-bottom: 4px solid $c-gray-light;
     }
     &__label {
@@ -189,13 +228,35 @@ export default Vue.extend({
         }
     }
     &__body {
-        padding: $p-lg $p-sm $p-sm $p-sm;
+        padding: $p-lg $p-sm;
+        border-bottom-left-radius: 4px;
+        border-bottom-right-radius: 4px;
 
+        &.is-drag-enter {
+            opacity: 0.2;
+
+            * {
+                pointer-events: none;
+            }
+        }
+        &:empty {
+            padding: $p-lg $p-sm;
+
+            &:before {
+                content: '課題がありません';
+                display: block;
+            }
+        }
+    }
+    &__body-inr {
         > *:not(:first-child) {
             margin-top: $m-md;
         }
         &-enter-active,
         &-leave-active {
+            transition: 0.3s;
+        }
+        &-move {
             transition: 0.3s;
         }
         &-enter,

@@ -1,14 +1,14 @@
 <template>
-    <div class="task-panel">
+    <div
+        class="task-panel"
+        draggable="true"
+        @drag="setDraggingTaskId(taskData.id)"
+        @dragend="dragend"
+    >
         <div class="task-panel__head">
             <div class="task-panel__head-group">
                 <p class="task-panel__label">{{ taskData.label }}</p>
                 <ul class="task-panel__btn">
-                    <li>
-                        <ArrowBtn
-                            :alt="`${taskData.label}の状態をドラッグ&ドロップで変更する`"
-                        />
-                    </li>
                     <li>
                         <MenuBtn
                             :alt="`${taskData.label}の内容を編集する`"
@@ -78,10 +78,20 @@
             <div class="task-panel__controller">
                 <ul class="task-panel__controller-inr">
                     <li class="task-panel__controller-item">
-                        <ArrowBtn state="left" />
+                        <ArrowBtn
+                            state="left"
+                            alt="課題を前の状態に戻す"
+                            :disabled="!canMoveToPrevStep"
+                            @click="moveTaskToPrevStep(taskData.id)"
+                        />
                     </li>
                     <li class="task-panel__controller-item">
-                        <ArrowBtn state="right" />
+                        <ArrowBtn
+                            state="right"
+                            alt="課題を次の状態に戻す"
+                            :disabled="!canMoveToNextStep"
+                            @click="moveTaskToNextStep(taskData.id)"
+                        />
                     </li>
                 </ul>
             </div>
@@ -91,8 +101,9 @@
 
 <script lang="ts">
 import Vue, { PropOptions } from 'vue';
-import { mapGetters, mapMutations } from 'vuex';
+import { mapState, mapGetters, mapMutations } from 'vuex';
 import { Task } from '~/types/global';
+import { STATE_ID } from '~/assets/ts/variables';
 
 export default Vue.extend({
     props: {
@@ -102,8 +113,9 @@ export default Vue.extend({
         } as PropOptions<Task>,
     },
     computed: {
+        ...mapState(['dragoverTaskFlag']),
         ...mapGetters(['categoryLabelList']),
-        existBody() {
+        existBody(): boolean {
             const {
                 existRegisterDate,
                 existStartDate,
@@ -118,10 +130,10 @@ export default Vue.extend({
                 existCategory
             );
         },
-        existFoot() {
-            const { existCategory } = this.taskData;
+        existFoot(): boolean {
+            const { existController } = this.taskData;
 
-            return existCategory;
+            return existController;
         },
         registerDate(): string {
             return this.taskData.registerDate.replace(/-/g, '/');
@@ -138,9 +150,25 @@ export default Vue.extend({
 
             return today >= expiration;
         },
+        canMoveToPrevStep(): boolean {
+            return this.taskData.stateId !== STATE_ID.FUTURE;
+        },
+        canMoveToNextStep(): boolean {
+            return this.taskData.stateId !== STATE_ID.DONE;
+        },
     },
     methods: {
-        ...mapMutations(['openTaskEditConfig']),
+        ...mapMutations([
+            'openTaskEditConfig',
+            'moveTaskToPrevStep',
+            'moveTaskToNextStep',
+            'setDraggingTaskId',
+        ]),
+        dragend() {
+            if (!this.dragoverTaskFlag) {
+                this.setDraggingTaskId(0);
+            }
+        },
     },
 });
 </script>
@@ -149,7 +177,17 @@ export default Vue.extend({
 .task-panel {
     border-radius: 4px;
     border: 1px solid $c-gray;
+    cursor: grab;
+    background-color: $c-white;
+    overflow: hidden;
+    transition: box-shadow 0.2s;
 
+    &:active {
+        cursor: grabbing;
+    }
+    &:hover {
+        box-shadow: $shadow-md;
+    }
     &__head {
         padding: $p-sm;
     }
