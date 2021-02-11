@@ -28,7 +28,7 @@ export default {
     css: ['~/assets/scss/elements'],
 
     // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
-    plugins: ['~/plugins/envData.ts'],
+    plugins: ['~/plugins/injectEnvData.ts'],
 
     // Auto import components: https://go.nuxtjs.dev/config-components
     components: true,

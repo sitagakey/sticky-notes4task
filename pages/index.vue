@@ -7,7 +7,14 @@
 </template>
 
 <script lang="ts">
-// import Vue from 'vue';
-// @TODO: データベースのデータを取得
-// export default Vue.extend({});
+import Vue from 'vue';
+import { openDb, dbUpgradeProcess } from '~/assets/ts/indexedDb';
+
+export default Vue.extend({
+    mounted() {
+        openDb(dbUpgradeProcess).then((db) => {
+            this.$store.dispatch('initDbData', db);
+        });
+    },
+});
 </script>

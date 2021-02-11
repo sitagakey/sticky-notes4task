@@ -86,7 +86,8 @@ export default Vue.extend({
         padding: $p-md;
     }
     &__body {
-        overflow: auto;
+        overflow-x: auto;
+        overflow-y: hidden;
 
         &-inr {
             display: flex;

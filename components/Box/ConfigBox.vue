@@ -1,5 +1,5 @@
 <template>
-    <div class="config-box" tabindex="-1" @keydown.escape="$emit('close')">
+    <div class="config-box" tabindex="-1" @keydown.esc="$emit('close')">
         <div class="config-box__inr">
             <div class="config-box__head">
                 <p class="config-box__label">{{ label }}</p>
@@ -303,7 +303,7 @@ export default Vue.extend({
             'addToast',
             'addTask',
             'closeConfigBox',
-            'setTask',
+            'putTask',
             'deleteTask',
         ]),
         chnageDeleteCategoryId(id: string) {
@@ -363,7 +363,7 @@ export default Vue.extend({
             }
         },
         setTaskConfigProcessing() {
-            this.setTask({ ...this.task });
+            this.putTask({ ...this.task });
             this.addToast(`課題「${this.task.label}」の修正を反映しました`);
             this.closeConfigBox();
             this.initData();

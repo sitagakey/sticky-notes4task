@@ -161,7 +161,7 @@ export default Vue.extend({
             'openTaskAddConfig',
             'setDragoverTaskFlag',
             'setDraggingTaskId',
-            'setTask',
+            'putTask',
         ]),
         compareDateStr(dateStrA: string, dateStrB: string) {
             const dateStrAWrap =
@@ -190,7 +190,7 @@ export default Vue.extend({
             const task = this.getTaskOfShallowCopy(this.draggingTaskId);
             task.stateId = this.stateId;
             this.isDragEnter = false;
-            this.setTask(task);
+            this.putTask(task);
             this.setDragoverTaskFlag(false);
             this.setDraggingTaskId(0);
         },

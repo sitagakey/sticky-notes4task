@@ -1,7 +1,5 @@
 import { Plugin } from '@nuxt/types';
 
-const envData: Plugin = ({ env }, inject) => {
+export default (({ env }, inject) => {
     inject('version', env.version);
-};
-
-export default envData;
+}) as Plugin;
