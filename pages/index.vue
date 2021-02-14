@@ -13,7 +13,7 @@ import { openDb, dbUpgradeProcess } from '~/assets/ts/indexedDb';
 export default Vue.extend({
     mounted() {
         openDb(dbUpgradeProcess).then((db) => {
-            this.$store.dispatch('initDbData', db);
+            this.$store.dispatch('injectDbDataToStore', db);
         });
     },
 });

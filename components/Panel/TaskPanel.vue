@@ -101,7 +101,7 @@
 
 <script lang="ts">
 import Vue, { PropOptions } from 'vue';
-import { mapState, mapGetters, mapMutations } from 'vuex';
+import { mapState, mapGetters, mapMutations, mapActions } from 'vuex';
 import { Task } from '~/types/global';
 import { STATE_ID } from '~/assets/ts/variables';
 
@@ -113,10 +113,15 @@ export default Vue.extend({
         } as PropOptions<Task>,
     },
     computed: {
-        ...mapState(['dragoverTaskFlag']),
-        ...mapGetters(['categoryLabelList']),
+        ...mapState('task', ['dragoverTaskFlag']),
+        ...mapGetters('category', ['categoryLabelList']),
+        /** ボディーコンテンツを表示するかどうか判定 */
         existBody(): boolean {
             const {
+                registerDate,
+                startDate,
+                expirationDate,
+                categoryId,
                 existRegisterDate,
                 existStartDate,
                 existExpirationDate,
@@ -124,46 +129,51 @@ export default Vue.extend({
             } = this.taskData;
 
             return (
-                existRegisterDate ||
-                existStartDate ||
-                existExpirationDate ||
-                existCategory
+                (registerDate !== '' && existRegisterDate) ||
+                (startDate !== '' && existStartDate) ||
+                (expirationDate !== '' && existExpirationDate) ||
+                (categoryId !== 0 && existCategory)
             );
         },
+        /** フッターコンテンツを表示するかどうか判定 */
         existFoot(): boolean {
             const { existController } = this.taskData;
 
             return existController;
         },
+        /** 登録日 */
         registerDate(): string {
             return this.taskData.registerDate.replace(/-/g, '/');
         },
+        /** 開始日 */
         startDate(): string {
             return this.taskData.startDate.replace(/-/g, '/');
         },
+        /** 期限日 */
         expirationDate(): string {
             return this.taskData.expirationDate.replace(/-/g, '/');
         },
+        /** 課題が期限日を超えているかどうか判定 */
         isDeadLine(): boolean {
             const expiration = new Date(this.taskData.expirationDate);
             const today = new Date();
 
-            return today >= expiration;
+            return today > expiration;
         },
+        /** 前の状態に移動が可能かどうか判定 */
         canMoveToPrevStep(): boolean {
             return this.taskData.stateId !== STATE_ID.FUTURE;
         },
+        /** 次の状態に移動が可能かどうか判定 */
         canMoveToNextStep(): boolean {
             return this.taskData.stateId !== STATE_ID.DONE;
         },
     },
     methods: {
-        ...mapMutations([
-            'openTaskEditConfig',
-            'moveTaskToPrevStep',
-            'moveTaskToNextStep',
-            'setDraggingTaskId',
-        ]),
+        ...mapActions(['moveTaskToPrevStep', 'moveTaskToNextStep']),
+        ...mapMutations('configBox', ['openTaskEditConfig']),
+        ...mapMutations('task', ['setDraggingTaskId']),
+        /** タスクをドロップした時の処理 */
         dragend() {
             if (!this.dragoverTaskFlag) {
                 this.setDraggingTaskId(0);

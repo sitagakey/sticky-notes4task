@@ -9,7 +9,13 @@
                 <Checkbox
                     :value="item.checked"
                     :label="item.label"
-                    @input="onInput(item.id, $event)"
+                    @input="
+                        $emit('input', {
+                            id: item.id,
+                            label: item.label,
+                            isActive: $event,
+                        })
+                    "
                 />
             </li>
         </ul>
@@ -28,8 +34,8 @@ export default Vue.extend({
         } as PropOptions<CheckboxData[]>,
     },
     methods: {
-        onInput(id: number, isActive: boolean) {
-            this.$emit('input', { id, isActive });
+        onInput(id: number, label: string, isActive: boolean) {
+            this.$emit('input', { id, label, isActive });
         },
     },
 });

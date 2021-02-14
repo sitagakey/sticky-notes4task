@@ -14,7 +14,7 @@
             </div>
             <div class="state-panel__order">
                 <Pulldown
-                    :options="pulldownOptions"
+                    :options="sortTypeListForPulldown"
                     :selected="sortType"
                     title="課題の並び順"
                     @input="
@@ -50,7 +50,7 @@
 
 <script lang="ts">
 import Vue, { PropOptions } from 'vue';
-import { mapState, mapMutations, mapGetters } from 'vuex';
+import { mapState, mapMutations, mapGetters, mapActions } from 'vuex';
 import { Task, PulldownOption } from '~/types/global';
 
 export default Vue.extend({
@@ -78,9 +78,10 @@ export default Vue.extend({
         };
     },
     computed: {
-        ...mapState(['dragoverTaskFlag', 'draggingTaskId']),
-        ...mapGetters(['getTaskOfShallowCopy']),
-        pulldownOptions(): PulldownOption[] {
+        ...mapState('task', ['dragoverTaskFlag', 'draggingTaskId']),
+        ...mapGetters('task', ['getTaskOfShallowCopy']),
+        /** プルダウンに表示するソートタイプ */
+        sortTypeListForPulldown(): PulldownOption[] {
             return [
                 {
                     label: '登録日（昇順）',
@@ -108,6 +109,8 @@ export default Vue.extend({
                 },
             ];
         },
+        /**
+         * sortTypeに対応したソートをタスク一覧に施し、その後ソート済みのタスク一覧を返す */
         sortedTaskList(): Task[] {
             const cloneTaskList: Task[] = JSON.parse(
                 JSON.stringify(this.taskList)
@@ -156,13 +159,12 @@ export default Vue.extend({
         },
     },
     methods: {
-        ...mapMutations([
-            'changeStatePanelSortType',
-            'openTaskAddConfig',
-            'setDragoverTaskFlag',
-            'setDraggingTaskId',
-            'putTask',
-        ]),
+        ...mapActions(['moveTaskToAnyStep', 'changeStatePanelSortType']),
+        ...mapMutations('configBox', ['openTaskAddConfig']),
+        ...mapMutations('task', ['setDragoverTaskFlag', 'setDraggingTaskId']),
+        /**
+         * 2つの文字列の日付情報を比較する
+         * A（第一引数）が大きい場合は「1」、B（第二引数）が大きい場合は「-1」、同じであれば「0」を返す */
         compareDateStr(dateStrA: string, dateStrB: string) {
             const dateStrAWrap =
                 dateStrA === '' ? new Date('1970-1-1') : new Date(dateStrA);
@@ -178,19 +180,23 @@ export default Vue.extend({
 
             return 0;
         },
+        /** taskPanelがdragenterしたときの処理 */
         dragenterProcessing() {
             this.isDragEnter = true;
             this.setDragoverTaskFlag(true);
         },
+        /** taskPanelがdragleaveしたときの処理 */
         dragleaveProcessing() {
             this.isDragEnter = false;
             this.setDragoverTaskFlag(false);
         },
+        /** taskPanelがdropしたときの処理 */
         dropProcessing() {
-            const task = this.getTaskOfShallowCopy(this.draggingTaskId);
-            task.stateId = this.stateId;
             this.isDragEnter = false;
-            this.putTask(task);
+            this.moveTaskToAnyStep({
+                id: this.draggingTaskId,
+                stateId: this.stateId,
+            });
             this.setDragoverTaskFlag(false);
             this.setDraggingTaskId(0);
         },

@@ -99,7 +99,7 @@ export const addDbData = (
     db: IDBDatabase,
     storeName: string,
     data: { id: number }
-): Promise<IDBDatabase> => {
+): Promise<Event> => {
     return new Promise((resolve, reject) => {
         const transaction = db.transaction(storeName, 'readwrite');
         const objectStore = transaction.objectStore(storeName);
@@ -108,7 +108,7 @@ export const addDbData = (
         request.addEventListener('error', (e) => {
             reject((e.target as IDBRequest).error);
         });
-        request.addEventListener('success', () => resolve);
+        request.addEventListener('success', resolve);
     });
 };
 /** 指定されたDBストアにデータを追加（データが既に存在すれば更新）する */
@@ -116,7 +116,7 @@ export const putDbData = (
     db: IDBDatabase,
     storeName: string,
     data: { id: number }
-): Promise<IDBDatabase> => {
+): Promise<Event> => {
     return new Promise((resolve, reject) => {
         const transaction = db.transaction(storeName, 'readwrite');
         const objectStore = transaction.objectStore(storeName);
@@ -125,7 +125,7 @@ export const putDbData = (
         request.addEventListener('error', (e) => {
             reject((e.target as IDBRequest).error);
         });
-        request.addEventListener('success', () => resolve);
+        request.addEventListener('success', resolve);
     });
 };
 /** 指定されたDBストアの全データを取得する */
@@ -151,7 +151,7 @@ export const deleteDbData = (
     db: IDBDatabase,
     storeName: string,
     id: number
-): Promise<undefined> => {
+): Promise<Event> => {
     return new Promise((resolve, reject) => {
         const transaction = db.transaction(storeName, 'readwrite');
         const objectStore = transaction.objectStore(storeName);
@@ -160,6 +160,6 @@ export const deleteDbData = (
         request.addEventListener('error', (e) => {
             reject((e.target as IDBRequest).error);
         });
-        request.addEventListener('success', () => resolve);
+        request.addEventListener('success', resolve);
     });
 };

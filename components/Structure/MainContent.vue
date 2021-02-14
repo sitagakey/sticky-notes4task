@@ -51,27 +51,25 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import { mapState, mapGetters, mapMutations } from 'vuex';
+import { mapState, mapGetters, mapMutations, mapActions } from 'vuex';
 
 export default Vue.extend({
     computed: {
-        ...mapState(['categoryList', 'taskList', 'configBox', 'toastList']),
-        ...mapGetters([
-            'filteringStatePanelList',
-            'filteringTaskList',
+        ...mapState('task', ['taskList']),
+        ...mapState('configBox', ['configBox']),
+        ...mapState('category', ['categoryList']),
+        ...mapState('toast', ['toastList']),
+        ...mapGetters('task', ['filteringTaskList']),
+        ...mapGetters('statePanel', [
             'statePanelCheckBoxData',
-            'categoryPanelCheckBoxData',
+            'filteringStatePanelList',
         ]),
+        ...mapGetters('category', ['categoryPanelCheckBoxData']),
     },
     methods: {
-        ...mapMutations([
-            'changeStatePanelState',
-            'changeCategoryState',
-            'addCategory',
-            'openCategoryConfig',
-            'closeConfigBox',
-            'deleteToast',
-        ]),
+        ...mapActions(['changeStatePanelState', 'changeCategoryState']),
+        ...mapMutations('toast', ['deleteToast']),
+        ...mapMutations('configBox', ['openCategoryConfig', 'closeConfigBox']),
     },
 });
 </script>

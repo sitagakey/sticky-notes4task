@@ -167,7 +167,7 @@
                         <Pulldown
                             :options="categoryConfigPulldownOptions"
                             title="カテゴリ"
-                            @input="chnageDeleteCategoryId"
+                            @input="setDeleteCategoryId"
                         />
                         <DengerBtn
                             label="このカテゴリを削除する"
@@ -185,9 +185,10 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import { mapState, mapGetters, mapMutations } from 'vuex';
+import { mapState, mapGetters, mapMutations, mapActions } from 'vuex';
 import { PulldownOption, Category, Task } from '~/types/global';
 import { formatDate, LockAt } from '~/assets/ts/utils';
+import { CATEGORY_ID } from '~/assets/ts/variables';
 
 interface DataType {
     addCategoryLabel: string;
@@ -234,7 +235,7 @@ export default Vue.extend({
                 existStartDate: false,
                 expirationDate: '',
                 existExpirationDate: false,
-                categoryId: 1, // 未分類
+                categoryId: CATEGORY_ID.UNCATEGORIZED,
                 existCategory: false,
                 stateId: 0,
                 existController: false,
@@ -243,15 +244,20 @@ export default Vue.extend({
         };
     },
     computed: {
-        ...mapState(['configBox', 'categoryList', 'taskList']),
-        ...mapGetters([
+        ...mapState('task', ['taskList']),
+        ...mapState('category', ['categoryList']),
+        ...mapState('configBox', ['configBox']),
+        ...mapGetters('task', ['taskUniqueId', 'getTaskOfShallowCopy']),
+        ...mapGetters('category', [
             'deletableCategoryList',
-            'taskUniqueId',
-            'isTouchscreen',
+            'categoryUniqueId',
+            'searchForExistingCategoriesByLabel',
         ]),
+        /** 登録日 */
         registerDate(): string {
             return this.task.registerDate.replace(/-/g, '/');
         },
+        /** 課題編集時のカテゴリ編集プルダウンの内容 */
         taskEditConfigPulldownOptions(): PulldownOption[] {
             return this.categoryList.map((category: Category) => {
                 return {
@@ -260,6 +266,7 @@ export default Vue.extend({
                 };
             });
         },
+        /** カテゴリ編集時のカテゴリ編集プルダウンの内容 */
         categoryConfigPulldownOptions(): PulldownOption[] {
             return this.deletableCategoryList.map((category: Category) => {
                 return {
@@ -267,6 +274,12 @@ export default Vue.extend({
                     value: String(category.id),
                 };
             });
+        },
+        /** タッチスクリーン判定 */
+        isTouchscreen(): boolean {
+            const canHover = matchMedia('(any-hover: hover)');
+
+            return !canHover.matches;
         },
     },
     watch: {
@@ -283,9 +296,9 @@ export default Vue.extend({
     created() {
         // 課題の編集をする場合は課題情報をthis.taskに注入する
         if (this.taskEditConfig) {
-            const targetTask = this.getRelatedTask();
-            this.task = { ...targetTask };
+            this.task = this.getTaskOfShallowCopy(this.relatedId);
         }
+        // タッチスクリーンの場合は強制的にコントローラーオプションにチェックを入れる
         if (this.isTouchscreen) {
             this.task.existController = true;
         }
@@ -297,28 +310,30 @@ export default Vue.extend({
         });
     },
     methods: {
-        ...mapMutations([
-            'deleteCategory',
-            'addCategory',
-            'addToast',
+        ...mapActions([
             'addTask',
-            'closeConfigBox',
             'putTask',
             'deleteTask',
+            'replaceAndDeleteCategoryOfTask',
         ]),
-        chnageDeleteCategoryId(id: string) {
+        ...mapActions(['addCategory']),
+        ...mapMutations('toast', ['addToast']),
+        ...mapMutations('configBox', ['closeConfigBox']),
+        /** 削除するカテゴリーIDを設定する */
+        setDeleteCategoryId(id: string) {
             this.deleteCategoryId = Number(id);
         },
-        existCategory(categoryList: Category[], label: string) {
-            const existLabel = categoryList.some(
-                (category: Category) => category.label === label
-            );
-
-            return existLabel;
-        },
+        /** カテゴリーを追加するときの処理 */
         addCategoryProcessing() {
-            if (!this.existCategory(this.categoryList, this.addCategoryLabel)) {
-                this.addCategory(this.addCategoryLabel);
+            if (
+                !this.searchForExistingCategoriesByLabel(this.addCategoryLabel)
+            ) {
+                const category: Category = {
+                    id: this.categoryUniqueId,
+                    label: this.addCategoryLabel,
+                    isActive: true,
+                };
+                this.addCategory(category);
                 this.addToast(
                     `「${this.addCategoryLabel}」カテゴリを追加しました`
                 );
@@ -327,6 +342,7 @@ export default Vue.extend({
                 alert('同じ名前のカテゴリが既に存在しています。');
             }
         },
+        /** カテゴリーを削除するときの処理 */
         deleteCategoryProcessing() {
             const idx = this.categoryList.findIndex((category: Category) => {
                 return category.id === this.deleteCategoryId;
@@ -335,13 +351,18 @@ export default Vue.extend({
             const confirmMessage = `「${targetLabel}」カテゴリを本当に削除しますか？`;
 
             if (confirm(confirmMessage)) {
-                this.deleteCategory(this.deleteCategoryId);
+                this.replaceAndDeleteCategoryOfTask({
+                    fromId: this.deleteCategoryId,
+                    toId: CATEGORY_ID.UNCATEGORIZED,
+                });
                 this.addToast(`「${targetLabel}」カテゴリを削除しました`);
             }
         },
+        /** 課題のカテゴリーIDを設定する */
         setTaskCategory(id: string) {
             this.task.categoryId = Number(id);
         },
+        /** 課題の追加をするときの処理 */
         addTaskProcessing() {
             if (this.task.label !== '') {
                 this.task.id = this.taskUniqueId;
@@ -352,6 +373,7 @@ export default Vue.extend({
                 this.initData();
             }
         },
+        /** 課題の削除をするときの処理 */
         deleteTaskProcessing() {
             const confirmMessage = `課題「${this.task.label}」を本当に削除しますか？`;
 
@@ -362,12 +384,18 @@ export default Vue.extend({
                 this.initData();
             }
         },
+        /** 課題の編集を反映するときの処理 */
         setTaskConfigProcessing() {
             this.putTask({ ...this.task });
             this.addToast(`課題「${this.task.label}」の修正を反映しました`);
             this.closeConfigBox();
             this.initData();
         },
+        /** フォーカスループの対象を再設定する */
+        resetFocusableElements() {
+            this.lockAt?.resetFocusableElements();
+        },
+        /** データの初期化 */
         initData() {
             this.addCategoryLabel = '';
             this.deleteCategoryId = 0;
@@ -387,14 +415,6 @@ export default Vue.extend({
                 stateId: 0,
                 existController: false,
             };
-        },
-        getRelatedTask() {
-            return this.taskList.find((task: Task) => {
-                return task.id === this.relatedId;
-            });
-        },
-        resetFocusableElements() {
-            this.lockAt?.resetFocusableElements();
         },
     },
 });

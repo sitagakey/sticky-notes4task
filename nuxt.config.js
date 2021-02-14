@@ -17,8 +17,7 @@ export default {
             {
                 hid: 'description',
                 name: 'description',
-                content:
-                    'あなたの持つカダイを管理するためのアプリケーションです',
+                content: 'だれでも無料で使える課題管理アプリです',
             },
         ],
         link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }],
