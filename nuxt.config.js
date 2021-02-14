@@ -40,7 +40,15 @@ export default {
     ],
 
     // Modules: https://go.nuxtjs.dev/config-modules
-    modules: [],
+    modules: [
+        [
+            '@nuxtjs/google-gtag',
+            {
+                id: 'G-LRGWVGBPQV',
+                debug: true,
+            },
+        ],
+    ],
     styleResources: {
         scss: ['~/assets/scss/variables.scss', '~/assets/scss/mixin.scss'],
     },
