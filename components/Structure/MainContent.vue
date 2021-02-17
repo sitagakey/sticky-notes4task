@@ -89,7 +89,7 @@ export default Vue.extend({
 
         &-inr {
             display: flex;
-            align-items: flex-start;
+            align-items: stretch;
             padding: $p-md 0 $p-md $p-md;
 
             > * {

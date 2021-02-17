@@ -167,9 +167,9 @@ export default Vue.extend({
          * A（第一引数）が大きい場合は「1」、B（第二引数）が大きい場合は「-1」、同じであれば「0」を返す */
         compareDateStr(dateStrA: string, dateStrB: string) {
             const dateStrAWrap =
-                dateStrA === '' ? new Date('1970-1-1') : new Date(dateStrA);
+                dateStrA === '' ? new Date('2990-1-1') : new Date(dateStrA);
             const dateStrBWrap =
-                dateStrB === '' ? new Date('1970-1-1') : new Date(dateStrB);
+                dateStrB === '' ? new Date('2990-1-1') : new Date(dateStrB);
 
             if (new Date(dateStrAWrap) > new Date(dateStrBWrap)) {
                 return 1;
@@ -206,6 +206,8 @@ export default Vue.extend({
 
 <style lang="scss" scoped>
 .state-panel {
+    display: flex;
+    flex-direction: column;
     box-shadow: $shadow-sm;
     border-radius: 4px;
     background: $c-white;
@@ -237,6 +239,7 @@ export default Vue.extend({
         padding: $p-lg $p-sm;
         border-bottom-left-radius: 4px;
         border-bottom-right-radius: 4px;
+        flex-basis: 100%;
 
         &.is-drag-enter {
             opacity: 0.2;
