@@ -106,6 +106,14 @@ export default Vue.extend({
                 min-width: $m-md;
                 height: 1px;
             }
+            &:empty {
+                padding-right: $p-md;
+
+                &:after {
+                    content: '選択されている状態パネルがありません。';
+                    height: auto;
+                }
+            }
         }
     }
     .state-panel-group {
