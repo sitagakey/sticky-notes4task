@@ -1,5 +1,6 @@
 <template>
     <div
+        :class="{ 'is-dead-line': isDeadLine }"
         class="task-panel"
         draggable="true"
         @drag="setDraggingTaskId(taskData.id)"
@@ -156,7 +157,12 @@ export default Vue.extend({
         /** 課題が期限日を超えているかどうか判定 */
         isDeadLine(): boolean {
             const expiration = new Date(this.taskData.expirationDate);
-            const today = new Date();
+            const date = new Date();
+            const today = new Date(
+                date.getFullYear(),
+                date.getMonth(),
+                date.getDate()
+            );
 
             return today > expiration;
         },
@@ -197,6 +203,9 @@ export default Vue.extend({
     }
     &:hover {
         box-shadow: $shadow-md;
+    }
+    &.is-dead-line {
+        border: 1px solid $c-pink;
     }
     &__head {
         padding: $p-sm;
