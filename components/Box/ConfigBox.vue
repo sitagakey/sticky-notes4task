@@ -89,6 +89,20 @@
                     <div class="config-box__sec-item">
                         <label
                             class="config-box__sec-label"
+                            for="config-box__state"
+                        >
+                            状態
+                        </label>
+                        <Pulldown
+                            id="config-box__state"
+                            :selected="String(task.stateId)"
+                            :options="statePanelPulldownData"
+                            @input="setTaskState"
+                        />
+                    </div>
+                    <div class="config-box__sec-item">
+                        <label
+                            class="config-box__sec-label"
                             for="config-box__category"
                         >
                             カテゴリー
@@ -215,7 +229,7 @@ export default Vue.extend({
             type: Boolean,
             required: true,
         },
-        relatedId: {
+        taskId: {
             type: Number,
             required: true,
         },
@@ -253,6 +267,7 @@ export default Vue.extend({
             'categoryUniqueId',
             'searchForExistingCategoriesByLabel',
         ]),
+        ...mapGetters('statePanel', ['statePanelPulldownData']),
         /** 登録日 */
         registerDate(): string {
             return this.task.registerDate.replace(/-/g, '/');
@@ -296,7 +311,7 @@ export default Vue.extend({
     created() {
         // 課題の編集をする場合は課題情報をthis.taskに注入する
         if (this.taskEditConfig) {
-            this.task = this.getTaskOfShallowCopy(this.relatedId);
+            this.task = this.getTaskOfShallowCopy(this.taskId);
         }
         // タッチスクリーンの場合は強制的にコントローラーオプションにチェックを入れる
         if (this.isTouchscreen) {
@@ -358,6 +373,10 @@ export default Vue.extend({
                 this.addToast(`「${targetLabel}」カテゴリを削除しました`);
             }
         },
+        /** 課題の状態IDを設定する */
+        setTaskState(id: string) {
+            this.task.stateId = Number(id);
+        },
         /** 課題のカテゴリーIDを設定する */
         setTaskCategory(id: string) {
             this.task.categoryId = Number(id);
@@ -366,7 +385,6 @@ export default Vue.extend({
         addTaskProcessing() {
             if (this.task.label !== '') {
                 this.task.id = this.taskUniqueId;
-                this.task.stateId = this.configBox.relatedId;
                 this.addTask({ ...this.task });
                 this.addToast(`課題「${this.task.label}」を追加しました`);
                 this.closeConfigBox();
@@ -432,6 +450,7 @@ export default Vue.extend({
     height: 100%;
     background: rgba($c-black-dark, 0.2);
     padding: $p-sm;
+    z-index: index($z-index, configBox);
 
     &__inr {
         display: grid;

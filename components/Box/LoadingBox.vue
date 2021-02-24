@@ -35,7 +35,7 @@ export default Vue.extend({
     position: fixed;
     top: 0;
     left: 0;
-    z-index: 100;
+    z-index: index($z-index, loading);
 
     &__icon {
         display: flex;

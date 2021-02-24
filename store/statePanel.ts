@@ -12,7 +12,7 @@ export const getters: GetterTree<State, ComplexState> = {
     filteringStatePanelList(state: State) {
         return state.statePanelList.filter((statePanel) => statePanel.isActive);
     },
-    /** 状態パネルに対応したチェックボックスデータを返す */
+    /** チェックボックスのデータに対応した状態パネルのデータを返す */
     statePanelCheckBoxData(state: State) {
         return state.statePanelList.map((statePanel) => {
             const { id, label, isActive: checked } = statePanel;
@@ -21,6 +21,17 @@ export const getters: GetterTree<State, ComplexState> = {
                 id,
                 label,
                 checked,
+            };
+        });
+    },
+    /** プルダウンのデータに対応した状態パネルのデータを返す */
+    statePanelPulldownData(state: State) {
+        return state.statePanelList.map((statePanel) => {
+            const { id, label } = statePanel;
+
+            return {
+                label,
+                value: String(id),
             };
         });
     },

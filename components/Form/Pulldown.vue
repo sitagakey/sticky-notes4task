@@ -64,13 +64,14 @@ export default Vue.extend({
 .pulldown {
     display: block;
     position: relative;
+    background: $c-white;
 
     &__content {
         display: block;
         width: 100%;
         font-size: 1.6rem;
         appearance: none;
-        background: transparent;
+        background: $c-white;
         border: 1px solid $c-gray;
         border-radius: 4px;
         padding: $p-xs calc(#{$p-xs} + #{$p-xs} + 12px) $p-xs $p-xs;

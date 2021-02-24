@@ -36,6 +36,7 @@ export default Vue.extend({
     border-radius: 4px;
     max-height: 35px;
     font-size: 1.6rem;
+    background: $c-white;
 
     &:focus {
         outline: 0;

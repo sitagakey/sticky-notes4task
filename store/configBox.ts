@@ -15,7 +15,7 @@ export const state = (): State => ({
         categoryConfig: false,
         taskAddConfig: false,
         taskEditConfig: false,
-        relatedId: 0,
+        taskId: 0,
     },
 });
 export const mutations: MutationTree<State> = {
@@ -29,11 +29,10 @@ export const mutations: MutationTree<State> = {
         windowLock();
     },
     /** 課題追加のモーダルを開くために設定を初期化する */
-    openTaskAddConfig(state: State, stateId: number) {
+    openTaskAddConfig(state: State) {
         state.configBox.isOpen = true;
         state.configBox.label = '課題を追加する';
         state.configBox.taskAddConfig = true;
-        state.configBox.relatedId = stateId;
         state.windowLockPoint = window.pageYOffset;
 
         windowLock();
@@ -52,7 +51,7 @@ export const mutations: MutationTree<State> = {
         state.configBox.isOpen = true;
         state.configBox.label = `「${taskLabel}」を編集`;
         state.configBox.taskEditConfig = true;
-        state.configBox.relatedId = taskId;
+        state.configBox.taskId = taskId;
         state.windowLockPoint = window.pageYOffset;
 
         windowLock();
@@ -64,7 +63,7 @@ export const mutations: MutationTree<State> = {
         state.configBox.categoryConfig = false;
         state.configBox.taskAddConfig = false;
         state.configBox.taskEditConfig = false;
-        state.configBox.relatedId = 0;
+        state.configBox.taskId = 0;
 
         windowUnLock(state.windowLockPoint);
     },

@@ -55,7 +55,7 @@ export const getters: GetterTree<State, ComplexState> = {
             return { ...task };
         }
 
-        throw new Error('Does not exist Task that related ID');
+        throw new Error('Does not exist Task that ID');
     },
 };
 export const mutations: MutationTree<State> = {

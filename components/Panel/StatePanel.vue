@@ -3,14 +3,9 @@
         <div class="state-panel__head">
             <div class="state-panel__head-detail">
                 <p class="state-panel__label">{{ label }}</p>
-                <ul class="state-panel__btn">
-                    <li>
-                        <AdditionalBtn
-                            alt="課題を追加する"
-                            @click="openTaskAddConfig(stateId)"
-                        />
-                    </li>
-                </ul>
+                <!-- <ul class="state-panel__btn">
+                    <li></li>
+                </ul> -->
             </div>
             <div class="state-panel__order">
                 <Pulldown
@@ -160,7 +155,6 @@ export default Vue.extend({
     },
     methods: {
         ...mapActions(['moveTaskToAnyStep', 'changeStatePanelSortType']),
-        ...mapMutations('configBox', ['openTaskAddConfig']),
         ...mapMutations('task', ['setDragoverTaskFlag', 'setDraggingTaskId']),
         /**
          * 2つの文字列の日付情報を比較する
