@@ -202,7 +202,7 @@ import Vue from 'vue';
 import { mapState, mapGetters, mapMutations, mapActions } from 'vuex';
 import { PulldownOption, Category, Task } from '~/types/global';
 import { formatDate, LockAt } from '~/assets/ts/utils';
-import { CATEGORY_ID } from '~/assets/ts/variables';
+import { STATE_ID, CATEGORY_ID } from '~/assets/ts/variables';
 
 interface DataType {
     addCategoryLabel: string;
@@ -251,7 +251,7 @@ export default Vue.extend({
                 existExpirationDate: false,
                 categoryId: CATEGORY_ID.UNCATEGORIZED,
                 existCategory: false,
-                stateId: 0,
+                stateId: STATE_ID.FUTURE,
                 existController: false,
             },
             lockAt: null,
