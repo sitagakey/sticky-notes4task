@@ -13,7 +13,7 @@ export const mutations: MutationTree<State> = {
     /** トーストのデータを追加する */
     addToast(state: State, label: string) {
         state.toastList.unshift({
-            id: formatDate(new Date(), 'yyyy/MM/dd HH:mm:ss.SSS'),
+            id: label + formatDate(new Date(), 'yyyy/MM/dd HH:mm:ss.SSS'),
             label,
         });
     },

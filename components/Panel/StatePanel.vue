@@ -3,9 +3,15 @@
         <div class="state-panel__head">
             <div class="state-panel__head-detail">
                 <p class="state-panel__label">{{ label }}</p>
-                <!-- <ul class="state-panel__btn">
-                    <li></li>
-                </ul> -->
+                <ul v-if="showDoneBtn" class="state-panel__btn">
+                    <li>
+                        <DoneBtn
+                            label="登録されているタスクを全て削除する"
+                            :disabled="disabledDoneBtn"
+                            @click="deleteTaskProcessing"
+                        />
+                    </li>
+                </ul>
             </div>
             <div class="state-panel__order">
                 <Pulldown
@@ -47,6 +53,7 @@
 import Vue, { PropOptions } from 'vue';
 import { mapState, mapMutations, mapGetters, mapActions } from 'vuex';
 import { Task, PulldownOption } from '~/types/global';
+import { STATE_ID } from '~/assets/ts/variables';
 
 export default Vue.extend({
     props: {
@@ -105,7 +112,8 @@ export default Vue.extend({
             ];
         },
         /**
-         * sortTypeに対応したソートをタスク一覧に施し、その後ソート済みのタスク一覧を返す */
+         * sortTypeに対応したソートをタスク一覧に施し、その後ソート済みのタスク一覧を返す
+         */
         sortedTaskList(): Task[] {
             const cloneTaskList: Task[] = JSON.parse(
                 JSON.stringify(this.taskList)
@@ -152,10 +160,26 @@ export default Vue.extend({
 
             throw new Error('this sortType does not exist.');
         },
+        /**
+         * 完了ボタンを表示するかどうか
+         */
+        showDoneBtn(): boolean {
+            const idToShow = [STATE_ID.DONE];
+
+            return idToShow.includes(this.stateId);
+        },
+        disabledDoneBtn(): boolean {
+            return this.sortedTaskList.length === 0;
+        },
     },
     methods: {
-        ...mapActions(['moveTaskToAnyStep', 'changeStatePanelSortType']),
+        ...mapActions([
+            'moveTaskToAnyStep',
+            'changeStatePanelSortType',
+            'deleteTask',
+        ]),
         ...mapMutations('task', ['setDragoverTaskFlag', 'setDraggingTaskId']),
+        ...mapMutations('toast', ['addToast']),
         /**
          * 2つの文字列の日付情報を比較する
          * A（第一引数）が大きい場合は「1」、B（第二引数）が大きい場合は「-1」、同じであれば「0」を返す */
@@ -193,6 +217,17 @@ export default Vue.extend({
             });
             this.setDragoverTaskFlag(false);
             this.setDraggingTaskId(0);
+        },
+        /** 課題の削除をするときの処理 */
+        deleteTaskProcessing() {
+            const confirmMessage = `このパネルに登録されている課題を全て削除しますか？`;
+
+            if (confirm(confirmMessage)) {
+                for (const task of this.sortedTaskList) {
+                    this.addToast(`課題「${task.label}」を削除しました`);
+                    this.deleteTask(task.id);
+                }
+            }
         },
     },
 });
