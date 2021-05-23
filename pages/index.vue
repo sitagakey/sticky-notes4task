@@ -10,26 +10,54 @@
 import Vue from 'vue';
 import { openDb, dbUpgradeProcess } from '~/assets/ts/indexedDb';
 
+type Data = {
+    bc: BroadcastChannel | null;
+};
+
 export default Vue.extend({
+    data(): Data {
+        return {
+            bc: null,
+        };
+    },
     mounted() {
+        this.bc = new BroadcastChannel('sticky-notes4task');
+        this.waitForMessageFromBc();
+        this.sendForMessageToBc(
+            '別のタブでも「カダイの付箋」が開かれています。\n正常な処理を行うためにはどちらかのタブを閉じる必要があります。'
+        );
         this.$nextTick(() => {
-            const startTime = performance.now();
             this.$nuxt.$loading.start();
 
             openDb(dbUpgradeProcess).then((db) => {
-                const endTime = performance.now();
-
                 this.$store.dispatch('injectDbDataToStore', db);
-
-                if (endTime - startTime < 400) {
-                    setTimeout(() => {
-                        this.$nuxt.$loading.finish();
-                    }, 400);
-                } else {
-                    this.$nuxt.$loading.finish();
-                }
+                this.$nuxt.$loading.finish();
             });
         });
+    },
+    methods: {
+        /**
+         * BoradcastChannel経由のメッセージがくるのを待機する
+         */
+        waitForMessageFromBc() {
+            if (!this.bc) {
+                throw new Error('BroadcastChannel is not set.');
+            }
+
+            this.bc.onmessage = (message: MessageEvent) => {
+                alert(message.data);
+            };
+        },
+        /**
+         * BoradcastChannel経由でメッセージを送る
+         */
+        sendForMessageToBc(message: string) {
+            if (!this.bc) {
+                throw new Error('BroadcastChannel is not set.');
+            }
+
+            this.bc.postMessage(message);
+        },
     },
 });
 </script>
