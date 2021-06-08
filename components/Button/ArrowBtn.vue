@@ -2,11 +2,10 @@
     <button
         :class="stateClass"
         class="arrow-btn"
+        :aria-label="alt"
         :disabled="disabled"
         @click="$emit('click')"
-    >
-        <span class="arrow-btn__alt">{{ alt }}</span>
-    </button>
+    ></button>
 </template>
 
 <script lang="ts">
@@ -145,16 +144,6 @@ export default Vue.extend({
             top: calc(50% - 32%);
             left: calc(50% - 20%);
         }
-    }
-    &__alt {
-        display: block;
-        width: 1px;
-        height: 1px;
-        white-space: nowrap;
-        overflow: hidden;
-        position: absolute;
-        top: -1px;
-        left: -1px;
     }
 }
 </style>

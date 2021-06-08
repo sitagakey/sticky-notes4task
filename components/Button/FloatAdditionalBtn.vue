@@ -1,7 +1,9 @@
 <template>
-    <button class="float-additional-btn" @click="$emit('click')">
-        <span class="float-additional-btn__alt">{{ alt }}</span>
-    </button>
+    <button
+        class="float-additional-btn"
+        :aria-label="alt"
+        @click="$emit('click')"
+    ></button>
 </template>
 
 <script lang="ts">
@@ -50,17 +52,6 @@ export default Vue.extend({
     }
     &::after {
         transform: rotate(90deg);
-    }
-    &__alt {
-        display: block;
-        width: 1px;
-        height: 1px;
-        opacity: 0;
-        white-space: nowrap;
-        overflow: hidden;
-        position: absolute;
-        left: -1px;
-        top: -1px;
     }
 }
 </style>

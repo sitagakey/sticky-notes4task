@@ -1,6 +1,6 @@
 <template>
-    <button class="menu-btn" @click="$emit('click')">
-        <span class="menu-btn__alt">{{ alt }}</span>
+    <button class="menu-btn" :aria-label="alt" @click="$emit('click')">
+        <span class="menu-btn__decoration"></span>
     </button>
 </template>
 
@@ -45,7 +45,7 @@ export default Vue.extend({
     &::after {
         transform: translateX(-6px);
     }
-    &__alt {
+    &__decoration {
         display: block;
         width: 3px;
         height: 3px;
@@ -54,8 +54,6 @@ export default Vue.extend({
         position: absolute;
         top: calc(50% - 1.5px);
         left: calc(50% - 1.5px);
-        white-space: nowrap;
-        overflow: hidden;
     }
 }
 </style>
