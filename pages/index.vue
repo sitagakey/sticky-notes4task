@@ -21,11 +21,14 @@ export default Vue.extend({
         };
     },
     mounted() {
-        this.bc = new BroadcastChannel('sticky-notes4task');
-        this.waitForMessageFromBc();
-        this.sendForMessageToBc(
-            '別のタブでも「カダイの付箋」が開かれています。\n正常な処理を行うためにはどちらかのタブを閉じる必要があります。'
-        );
+        if ('BroadcastChannel' in window) {
+            this.bc = new BroadcastChannel('sticky-notes4task');
+            this.waitForMessageFromBc();
+            this.sendForMessageToBc(
+                '別のタブでも「カダイの付箋」が開かれています。\n正常な処理を行うためにはどちらかのタブを閉じる必要があります。'
+            );
+        }
+
         this.$nextTick(() => {
             this.$nuxt.$loading.start();
 
