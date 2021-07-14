@@ -1,7 +1,7 @@
 <template>
     <input
         class="datepicker"
-        type="date"
+        type="datetime-local"
         :value="value"
         @input="$emit('input', $event.target.value)"
     />

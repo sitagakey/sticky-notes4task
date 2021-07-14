@@ -243,7 +243,7 @@ export default Vue.extend({
                 label: '',
                 description: '',
                 existDescription: false,
-                registerDate: formatDate(new Date(), 'yyyy-MM-dd'),
+                registerDate: formatDate(new Date(), 'yyyy-MM-ddTHH:mm'),
                 existRegisterDate: false,
                 startDate: '',
                 existStartDate: false,
@@ -270,7 +270,7 @@ export default Vue.extend({
         ...mapGetters('statePanel', ['statePanelPulldownData']),
         /** 登録日 */
         registerDate(): string {
-            return this.task.registerDate.replace(/-/g, '/');
+            return this.task.registerDate.replace(/-/g, '/').replace('T', ' ');
         },
         /** 課題編集時のカテゴリ編集プルダウンの内容 */
         taskEditConfigPulldownOptions(): PulldownOption[] {

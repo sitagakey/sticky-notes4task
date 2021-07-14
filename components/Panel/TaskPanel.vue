@@ -144,19 +144,25 @@ export default Vue.extend({
         },
         /** 登録日 */
         registerDate(): string {
-            return this.taskData.registerDate.replace(/-/g, '/');
+            return this.taskData.registerDate
+                .replace(/-/g, '/')
+                .replace('T', ' ');
         },
         /** 開始日 */
         startDate(): string {
-            return this.taskData.startDate.replace(/-/g, '/');
+            return this.taskData.startDate.replace(/-/g, '/').replace('T', ' ');
         },
         /** 期限日 */
         expirationDate(): string {
-            return this.taskData.expirationDate.replace(/-/g, '/');
+            return this.taskData.expirationDate
+                .replace(/-/g, '/')
+                .replace('T', ' ');
         },
         /** 課題が期限日を超えているかどうか判定 */
         isDeadLine(): boolean {
-            const expiration = new Date(this.taskData.expirationDate);
+            const expiration = new Date(
+                Date.parse(this.taskData.expirationDate)
+            );
             const date = new Date();
             const today = new Date(
                 date.getFullYear(),

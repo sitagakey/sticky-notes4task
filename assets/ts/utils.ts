@@ -14,6 +14,8 @@ export const formatDate = (dateObject: Date, format: string): string => {
             return `${year}/${month}/${date}`;
         case 'yyyy-MM-dd':
             return `${year}-${month}-${date}`;
+        case 'yyyy-MM-ddTHH:mm':
+            return `${year}/${month}/${date}T${hour}:${minutes}`;
         case 'yyyy/MM/dd HH:mm:ss.SSS':
             return `${year}/${month}/${date} ${hour}:${minutes}:${seconds}.${milliseconds}`;
         default:

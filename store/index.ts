@@ -228,8 +228,9 @@ export const actions: ActionTree<ComplexState, State> = {
         const idx = state.statePanel.statePanelList.findIndex(
             (statePanel) => statePanel.id === id
         );
-        const statePanelShallowCopy: StatePanel =
-            state.statePanel.statePanelList[idx];
+        const statePanelShallowCopy: StatePanel = {
+            ...state.statePanel.statePanelList[idx],
+        };
 
         statePanelShallowCopy.sortType = sortType;
 
