@@ -1,7 +1,9 @@
 <template>
     <header class="header">
         <div class="header__inr">
-            <h1 class="header__label">カダイの付箋</h1>
+            <h1 class="header__label">
+                <NuxtLink to="/">カダイの付箋</NuxtLink>
+            </h1>
             <p class="header__desc">あなたの課題をカンタン管理！</p>
         </div>
     </header>
@@ -29,6 +31,10 @@
     &__label {
         font-size: 2.4rem;
         letter-spacing: 0.08em;
+
+        a {
+            text-decoration: none;
+        }
     }
     &__desc {
         display: flex;

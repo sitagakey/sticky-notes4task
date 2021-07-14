@@ -8,12 +8,14 @@
             <p class="footer__label">諸注意</p>
             <div class="footer__text-group">
                 <p>
-                    入力されたデータはお使いのWebブラウザに保存されるため、外部に公開されることはありません。<br />
-                    ですが、安全のため機密情報などは入力しないことをオススメいたします。
+                    入力されたデータはお使いのWebブラウザに保存されるため、外部に保存や公開されることはありません。
                 </p>
             </div>
             <p class="footer__label">リンク集</p>
             <ul class="footer__list">
+                <li class="footer__list-item">
+                    <NuxtLink to="/about">このアプリについて</NuxtLink>
+                </li>
                 <li class="footer__list-item">
                     <a href="https://github.com/hikiroom/sticky-notes4task">
                         GitHub
