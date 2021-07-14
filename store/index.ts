@@ -15,6 +15,7 @@ import {
 
 export interface State {
     db: IDBDatabase | null;
+    bc: BroadcastChannel | null;
 }
 export interface ComplexState {
     db: IDBDatabase | null;
@@ -25,7 +26,10 @@ export interface ComplexState {
     toast: ToastState;
 }
 
-export const state = (): State => ({ db: null });
+export const state = (): State => ({
+    db: null,
+    bc: null,
+});
 export const actions: ActionTree<ComplexState, State> = {
     /** DBのデータをストアに反映する */
     injectDbDataToStore({ commit }, db: IDBDatabase) {
@@ -247,5 +251,9 @@ export const mutations: MutationTree<State> = {
     /** IDBDatabaseをストアに保存する */
     setDb(state: State, db: IDBDatabase) {
         state.db = db;
+    },
+    /** IDBDatabaseをストアに保存する */
+    setBc(state: State, bc: BroadcastChannel) {
+        state.bc = bc;
     },
 };

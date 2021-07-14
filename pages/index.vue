@@ -8,26 +8,25 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import { mapState } from 'vuex';
 import { openDb, dbUpgradeProcess } from '~/assets/ts/indexedDb';
 
-type Data = {
-    bc: BroadcastChannel | null;
-};
-
 export default Vue.extend({
-    data(): Data {
-        return {
-            bc: null,
-        };
+    computed: {
+        ...mapState(['bc']),
     },
     mounted() {
-        if ('BroadcastChannel' in window) {
-            this.bc = new BroadcastChannel('sticky-notes4task');
-            this.waitForMessageFromBc();
-            this.sendForMessageToBc(
-                '別のタブでも「カダイの付箋」が開かれています。\n正常な処理を行うためにはどちらかのタブを閉じる必要があります。'
+        if ('BroadcastChannel' in window && !this.bc) {
+            this.$store.commit(
+                'setBc',
+                new BroadcastChannel('sticky-notes4task')
             );
+            this.waitForMessageFromBc();
         }
+
+        this.sendForMessageToBc(
+            '別のタブでも「カダイの付箋」が開かれています。\n正常な処理を行うためにはどちらかのタブを閉じる必要があります。'
+        );
 
         this.$nextTick(() => {
             this.$nuxt.$loading.start();
