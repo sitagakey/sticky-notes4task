@@ -1,16 +1,6 @@
 <template>
     <footer class="footer">
         <div class="footer__inr">
-            <p class="footer__label">カダイの付箋とは？</p>
-            <div class="footer__text-group">
-                <p>だれでも無料で使える課題管理アプリです😃</p>
-            </div>
-            <p class="footer__label">諸注意</p>
-            <div class="footer__text-group">
-                <p>
-                    入力されたデータはお使いのWebブラウザに保存されるため、外部に保存や公開されることはありません。
-                </p>
-            </div>
             <p class="footer__label">リンク集</p>
             <ul class="footer__list">
                 <li class="footer__list-item">
