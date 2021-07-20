@@ -1,15 +1,24 @@
 <template>
     <header class="header">
-        <div class="header__inr">
+        <div class="header__top">
             <h1 v-if="h1" class="header__label">
-                <NuxtLink to="/">カダイの付箋</NuxtLink>
+                <NuxtLink to="/">
+                    <span class="header__label-main">カダイの付箋</span>
+                    <span class="header__label-sub">
+                        あなたの課題をカンタン管理！
+                    </span>
+                </NuxtLink>
             </h1>
             <p v-else class="header__label">
-                <NuxtLink to="/">カダイの付箋</NuxtLink>
+                <NuxtLink to="/">
+                    <span class="header__label-main">カダイの付箋</span>
+                    <span class="header__label-sub">
+                        あなたの課題をカンタン管理！
+                    </span>
+                </NuxtLink>
             </p>
-            <p class="header__desc">あなたの課題をカンタン管理！</p>
         </div>
-        <nav class="header__nav">
+        <nav class="header__bottom">
             <ul class="header__list">
                 <li class="header__list-item">
                     <NuxtLink to="/about">このアプリについて</NuxtLink>
@@ -46,33 +55,30 @@ export default Vue.extend({
     width: 100%;
     background: $c-primary;
 
-    &__inr {
+    &__top {
         height: 100%;
         padding: $p-sm $p-md;
-        display: flex;
-        flex-wrap: wrap;
-        align-items: center;
-        margin-top: -#{$m-xs};
-        margin-left: -#{$m-md};
-
-        > * {
-            margin-top: $m-xs;
-            margin-left: $m-md;
-        }
     }
     &__label {
-        font-weight: bold;
-        font-size: 2.4rem;
-        letter-spacing: 0.08em;
+        display: inline-flex;
 
         a {
+            display: inline-flex;
+            flex-direction: column;
+            align-items: center;
             text-decoration: none;
         }
     }
-    &__desc {
+    &__label-main {
+        font-weight: bold;
+        font-size: 2.1rem;
+        letter-spacing: 0.08em;
+    }
+    &__label-sub {
         display: flex;
         align-items: center;
-        font-size: 1.4rem;
+        font-size: 1rem;
+        font-weight: normal;
 
         &::before,
         &::after {
@@ -89,7 +95,7 @@ export default Vue.extend({
             margin-left: $m-xs;
         }
     }
-    &__nav {
+    &__bottom {
         height: 100%;
         padding: $p-xs $p-md;
         background: $c-gray-light;

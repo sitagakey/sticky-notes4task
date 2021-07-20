@@ -17,7 +17,8 @@ export default {
             {
                 hid: 'description',
                 name: 'description',
-                content: 'だれでも無料で使える課題管理アプリです',
+                content:
+                    'カダイの付箋は「誰もが、手軽に」をコンセプトに作られた、登録不要な上に完全無料で使える課題管理（タスク管理）アプリです！いわゆるカンバンボード形式で課題を管理していけるのが特徴です。',
             },
         ],
         link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }],
