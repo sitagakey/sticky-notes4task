@@ -167,7 +167,9 @@ export default Vue.extend({
             const today = new Date(
                 date.getFullYear(),
                 date.getMonth(),
-                date.getDate()
+                date.getDate(),
+                date.getHours(),
+                date.getMinutes()
             );
 
             return today > expiration;
@@ -211,6 +213,7 @@ export default Vue.extend({
         box-shadow: $shadow-md;
     }
     &.is-dead-line {
+        background-color: $c-pink-light;
         border: 1px solid $c-pink;
     }
     &__head {
