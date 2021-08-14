@@ -52,6 +52,7 @@ export interface ConfigBox {
     taskAddConfig: boolean;
     taskEditConfig: boolean;
     taskId: number;
+    stateId: number;
 }
 export interface Toast {
     id: string;

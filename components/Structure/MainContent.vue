@@ -15,10 +15,6 @@
                 }"
                 @input="changeCategoryState"
             />
-            <FloatAdditionalBtn
-                alt="課題を追加する"
-                @click="openTaskAddConfig()"
-            />
         </div>
         <div class="main-content__body">
             <transition-group
@@ -73,11 +69,7 @@ export default Vue.extend({
     methods: {
         ...mapActions(['changeStatePanelState', 'changeCategoryState']),
         ...mapMutations('toast', ['deleteToast']),
-        ...mapMutations('configBox', [
-            'openTaskAddConfig',
-            'openCategoryConfig',
-            'closeConfigBox',
-        ]),
+        ...mapMutations('configBox', ['openCategoryConfig', 'closeConfigBox']),
     },
 });
 </script>

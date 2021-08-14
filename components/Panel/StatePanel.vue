@@ -3,8 +3,14 @@
         <div class="state-panel__head">
             <div class="state-panel__head-detail">
                 <p class="state-panel__label">{{ label }}</p>
-                <ul v-if="showDoneBtn" class="state-panel__btn">
+                <ul class="state-panel__btn">
                     <li>
+                        <AdditionalBtn
+                            alt="課題を追加する"
+                            @click="openTaskAddConfig(stateId)"
+                        />
+                    </li>
+                    <li v-if="showDoneBtn">
                         <DoneBtn
                             label="登録されているタスクを全て削除する"
                             :disabled="disabledDoneBtn"
@@ -178,6 +184,7 @@ export default Vue.extend({
             'changeStatePanelSortType',
             'deleteTask',
         ]),
+        ...mapMutations('configBox', ['openTaskAddConfig']),
         ...mapMutations('task', ['setDragoverTaskFlag', 'setDraggingTaskId']),
         ...mapMutations('toast', ['addToast']),
         /**

@@ -313,6 +313,10 @@ export default Vue.extend({
         if (this.taskEditConfig) {
             this.task = this.getTaskOfShallowCopy(this.taskId);
         }
+        // 課題の追加する場合はthis.task.stateIdに、選択した状態パネルに対応するstateIdを注入する
+        if (this.taskAddConfig) {
+            this.task.stateId = this.configBox.stateId;
+        }
         // タッチスクリーンの場合は強制的にコントローラーオプションにチェックを入れる
         if (this.isTouchscreen) {
             this.task.existController = true;

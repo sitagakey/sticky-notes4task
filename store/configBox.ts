@@ -1,6 +1,7 @@
 import { MutationTree } from 'vuex';
 import { windowLock, windowUnLock } from '~/assets/ts/utils';
 import { ConfigBox } from '~/types/global';
+import { STATE_ID } from '~/assets/ts/variables';
 
 export interface State {
     windowLockPoint: number; // windowの固定されているy軸位置
@@ -16,8 +17,10 @@ export const state = (): State => ({
         taskAddConfig: false,
         taskEditConfig: false,
         taskId: 0,
+        stateId: STATE_ID.FUTURE,
     },
 });
+
 export const mutations: MutationTree<State> = {
     /** カテゴリーのモーダルを開くために設定を初期化する */
     openCategoryConfig(state: State) {
@@ -29,10 +32,11 @@ export const mutations: MutationTree<State> = {
         windowLock();
     },
     /** 課題追加のモーダルを開くために設定を初期化する */
-    openTaskAddConfig(state: State) {
+    openTaskAddConfig(state: State, stateId: number) {
         state.configBox.isOpen = true;
         state.configBox.label = '課題を追加する';
         state.configBox.taskAddConfig = true;
+        state.configBox.stateId = stateId;
         state.windowLockPoint = window.pageYOffset;
 
         windowLock();
@@ -64,6 +68,7 @@ export const mutations: MutationTree<State> = {
         state.configBox.taskAddConfig = false;
         state.configBox.taskEditConfig = false;
         state.configBox.taskId = 0;
+        state.configBox.stateId = STATE_ID.FUTURE;
 
         windowUnLock(state.windowLockPoint);
     },

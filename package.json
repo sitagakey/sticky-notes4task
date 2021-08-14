@@ -1,6 +1,6 @@
 {
   "name": "sticky-notes4task",
-  "version": "0.5.2",
+  "version": "0.5.3",
   "scripts": {
     "dev": "nuxt-ts",
     "build": "nuxt-ts build",
