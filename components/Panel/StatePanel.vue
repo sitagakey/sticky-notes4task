@@ -58,6 +58,7 @@
 <script lang="ts">
 import Vue, { PropOptions } from 'vue';
 import { mapState, mapMutations, mapGetters, mapActions } from 'vuex';
+import party from 'party-js';
 import { Task, PulldownOption } from '~/types/global';
 import { STATE_ID } from '~/assets/ts/variables';
 
@@ -230,10 +231,28 @@ export default Vue.extend({
             const confirmMessage = `このパネルに登録されている課題を全て削除しますか？`;
 
             if (confirm(confirmMessage)) {
+                const taskListLen = this.sortedTaskList.length;
                 for (const task of this.sortedTaskList) {
                     this.addToast(`課題「${task.label}」を削除しました`);
                     this.deleteTask(task.id);
                 }
+
+                // 上記の処理と同じタイミングで実行すると紙吹雪がうまく動作しないため、実行を適当にずらす
+                setTimeout(() => {
+                    this.congratulations(taskListLen);
+                }, 100);
+            }
+        },
+        /** おめでたいエフェクトを表示する */
+        congratulations(amount: number) {
+            const header: HTMLElement | null = document.querySelector(
+                '.header'
+            );
+            if (header) {
+                party.confetti(header, {
+                    count: amount * 20,
+                    spread: 100,
+                });
             }
         },
     },

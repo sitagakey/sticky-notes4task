@@ -22,7 +22,8 @@
     "@nuxt/typescript-runtime": "^2.0.1",
     "@nuxtjs/google-gtag": "^1.0.4",
     "core-js": "^3.8.2",
-    "nuxt": "^2.14.12"
+    "nuxt": "^2.14.12",
+    "party-js": "^2.0.1"
   },
   "devDependencies": {
     "@nuxt/types": "^2.14.12",
